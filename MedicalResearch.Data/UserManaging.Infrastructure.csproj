@@ -7,12 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="6.0.1" />
-    <PackageReference Include="MongoDB.Driver" Version="2.14.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MedicalResearch.Core\MedicalResearch.Core.csproj" />
+    <ProjectReference Include="..\MedicalResearch.Core\UserManaging.Domain.csproj" />
   </ItemGroup>
 
 </Project>
