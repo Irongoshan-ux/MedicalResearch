@@ -1,6 +1,7 @@
-﻿using UserManaging.Domain.Interfaces;
+﻿using UserManaging.Domain.Entities.Users;
+using UserManaging.Domain.Interfaces;
 
-namespace UserManaging.Domain.Entities.Users
+namespace UserManaging.API.Services.Users
 {
     public class UserService : IUserService
     {
@@ -23,6 +24,11 @@ namespace UserManaging.Domain.Entities.Users
             var result = await _userRepository.DeleteAsync(user, cancellationToken);
 
             return result.Succeeded;
+        }
+
+        public Task<User> FindByEmailAsync(string email, CancellationToken cancellationToken)
+        {
+            return _userRepository.GetUserByEmailAsync(email, cancellationToken);
         }
 
         public Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)

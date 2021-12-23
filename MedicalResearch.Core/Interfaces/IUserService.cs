@@ -12,6 +12,7 @@ namespace UserManaging.Domain.Interfaces
         Task<bool> CreateAsync(User user, CancellationToken cancellationToken);
         Task<bool> UpdateAsync(User user, CancellationToken cancellationToken);
         Task<bool> DeleteAsync(User user, CancellationToken cancellationToken);
+        Task<User> FindByEmailAsync(string email, CancellationToken cancellationToken);
         Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken);
         Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken);
     }

@@ -1,5 +1,12 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using UserManaging.API.Services.Users;
+using UserManaging.Domain.Entities.Users;
+using UserManaging.Domain.Interfaces;
+using UserManaging.Infrastructure.Configuration;
 using UserManaging.Infrastructure.Data;
+using UserManaging.Infrastructure.Data.EntitiesConfig;
+using UserManaging.Infrastructure.Data.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,8 +25,33 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseSqlServer(configuration.GetConnectionString("CarMarketDb"));
+    options.UseSqlServer(configuration.GetConnectionString("UserManagingDatabase"));
 });
+
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+{
+    options.Password.RequiredLength = 10;
+    options.Password.RequiredUniqueChars = 3;
+})
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddIdentityServer(options =>
+{
+    options.UserInteraction.LoginUrl = "/authorization/login";
+    options.UserInteraction.LogoutUrl = "/authorization/logout";
+})
+    .AddProfileService<IdentityServerProfileService>()
+    .AddInMemoryApiResources(IdentityServerConfiguration.GetApiResources())
+    .AddInMemoryClients(IdentityServerConfiguration.GetClients())
+    .AddInMemoryIdentityResources(IdentityServerConfiguration.GetIdentityResources())
+    .AddInMemoryApiScopes(IdentityServerConfiguration.GetScopes())
+    .AddDeveloperSigningCredential();
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserAuthenticaionService, UserAuthenticationService>();
+
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<EntityToDTOMappingConfig>());
 
 var app = builder.Build();
 
