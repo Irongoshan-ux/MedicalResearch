@@ -10,50 +10,29 @@ namespace UserManaging.Infrastructure.Data.Repositories
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
+        private bool disposedValue;
 
-        public UserRepository(ApplicationDbContext userContext, IMapper mapper)
+        public UserRepository(ApplicationDbContext userContext, IMapper mapper, UserManager<User> userManager)
         {
             _context = userContext;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
-        public async Task<IdentityResult> CreateAsync(User user, CancellationToken cancellationToken)
+        public Task<IdentityResult> CreateAsync(User user, CancellationToken cancellationToken)
         {
-            try
-            {
-                await _context.Users.AddAsync(user, cancellationToken);
-            }
-            catch
-            {
-                return IdentityResult.Failed();
-            }
-
-            await _context.SaveChangesAsync(cancellationToken);
-            return IdentityResult.Success;
+            return _userManager.CreateAsync(user);
         }
 
-        public async Task<IdentityResult> DeleteAsync(User user, CancellationToken cancellationToken)
+        public Task<IdentityResult> DeleteAsync(User user, CancellationToken cancellationToken)
         {
-            _context.Users.Remove(user);
-         
-            await _context.SaveChangesAsync();
-
-            return IdentityResult.Success;
+            return _userManager.DeleteAsync(user);
         }
 
-        public void Dispose()
+        public Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
-            _context?.Dispose();
-        }
-
-        public async Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
-        {
-            var user = await _context.Users
-                .AsNoTracking()
-                .Where(x => x.Id == userId)
-                .FirstOrDefaultAsync();
-
-            return _mapper.Map<User>(user);
+            return _userManager.FindByIdAsync(userId);
         }
 
         public async Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
@@ -70,7 +49,7 @@ namespace UserManaging.Infrastructure.Data.Repositories
         {
             var foundUser = await _context.Users
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x == user, cancellationToken);
+                .FirstOrDefaultAsync(x => x.Email == user.Email, cancellationToken);
          
             return foundUser.NormalizedUserName;
         }
@@ -95,29 +74,21 @@ namespace UserManaging.Infrastructure.Data.Repositories
             return _mapper.Map<User>(user);
         }
 
-        public async Task<string> GetUserIdAsync(User user, CancellationToken cancellationToken)
+        public Task<string> GetUserIdAsync(User user, CancellationToken cancellationToken)
         {
-            var foundUser = await _context.Users
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x => x == user, cancellationToken);
-
-            return foundUser.Id;
+            return _userManager.GetUserIdAsync(user);
         }
 
-        public async Task<string> GetUserNameAsync(User user, CancellationToken cancellationToken)
+        public Task<string> GetUserNameAsync(User user, CancellationToken cancellationToken)
         {
-            var foundUser = await _context.Users
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x => x == user, cancellationToken);
-
-            return foundUser.UserName;
+            return _userManager.GetUserNameAsync(user);
         }
 
         public async Task SetNormalizedUserNameAsync(User user, string normalizedName, CancellationToken cancellationToken)
         {
             var foundUser = await _context.Users
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x == user, cancellationToken);
+                .FirstOrDefaultAsync(x => x.Email == user.Email, cancellationToken);
 
             if (foundUser != null)
             {
@@ -127,27 +98,33 @@ namespace UserManaging.Infrastructure.Data.Repositories
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task SetUserNameAsync(User user, string userName, CancellationToken cancellationToken)
+        public Task SetUserNameAsync(User user, string userName, CancellationToken cancellationToken)
         {
-            var foundUser = await _context.Users
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x => x == user, cancellationToken);
-
-            if (foundUser != null)
-            {
-                foundUser.UserName = userName;
-            }
-
-            await _context.SaveChangesAsync(cancellationToken);
+            return _userManager.SetUserNameAsync(user, userName);
         }
 
-        public async Task<IdentityResult> UpdateAsync(User user, CancellationToken cancellationToken)
+        public Task<IdentityResult> UpdateAsync(User user, CancellationToken cancellationToken)
         {
-            _context.Update(user);
+            return _userManager.UpdateAsync(user);
+        }
 
-            await _context.SaveChangesAsync();
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    _context?.Dispose();
+                }
 
-            return IdentityResult.Success;
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

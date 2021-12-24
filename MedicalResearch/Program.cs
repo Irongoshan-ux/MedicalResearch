@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using UserManaging.API.Services.Users;
@@ -28,6 +29,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(configuration.GetConnectionString("UserManagingDatabase"));
 });
 
+builder.Services.AddCors();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                 .AddJwtBearer(options =>
+                 {
+                     options.Audience = "API";
+                     options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
+                 });
+
+builder.Services.AddAuthorization();
+
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
     options.Password.RequiredLength = 10;
@@ -47,6 +59,8 @@ builder.Services.AddIdentityServer(options =>
     .AddInMemoryApiScopes(IdentityServerConfiguration.GetScopes())
     .AddDeveloperSigningCredential();
 
+builder.Services.AddControllers();
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserAuthenticaionService, UserAuthenticationService>();
@@ -62,8 +76,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(builder =>
+{
+    builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+});
+
 app.UseHttpsRedirection();
 
+app.UseRouting();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

@@ -21,6 +21,8 @@ namespace UserManaging.API.Services.Users
 
         public async Task<bool> DeleteAsync(User user, CancellationToken cancellationToken)
         {
+            user = await GetUserRequiredInfoAsync(user, cancellationToken);
+
             var result = await _userRepository.DeleteAsync(user, cancellationToken);
 
             return result.Succeeded;
@@ -56,21 +58,40 @@ namespace UserManaging.API.Services.Users
             return _userRepository.GetUserNameAsync(user, cancellationToken);
         }
 
-        public Task SetNormalizedUserNameAsync(User user, string normalizedName, CancellationToken cancellationToken)
+        public async Task SetNormalizedUserNameAsync(User user, string normalizedName, CancellationToken cancellationToken)
         {
-            return _userRepository.SetNormalizedUserNameAsync(user, normalizedName, cancellationToken);
+            user = await GetUserRequiredInfoAsync(user, cancellationToken);
+
+            await _userRepository.SetNormalizedUserNameAsync(user, normalizedName, cancellationToken);
         }
 
-        public Task SetUserNameAsync(User user, string userName, CancellationToken cancellationToken)
+        public async Task SetUserNameAsync(User user, string userName, CancellationToken cancellationToken)
         {
-            return _userRepository.SetUserNameAsync(user, userName, cancellationToken);
+            user = await GetUserRequiredInfoAsync(user, cancellationToken);
+
+            await _userRepository.SetUserNameAsync(user, userName, cancellationToken);
         }
 
         public async Task<bool> UpdateAsync(User user, CancellationToken cancellationToken)
         {
+            user = await GetUserRequiredInfoAsync(user, cancellationToken);
+
             var result = await _userRepository.UpdateAsync(user, cancellationToken);
 
             return result.Succeeded;
+        }
+
+        private async Task<User> GetUserRequiredInfoAsync(User user, CancellationToken cancellationToken)
+{
+            var userFromDb = await FindByEmailAsync(user.Email, cancellationToken);
+
+            if (userFromDb != null)
+            {
+                user.ConcurrencyStamp = userFromDb.ConcurrencyStamp;
+                user.Id = userFromDb.Id;
+            }
+
+            return user;
         }
     }
 }
