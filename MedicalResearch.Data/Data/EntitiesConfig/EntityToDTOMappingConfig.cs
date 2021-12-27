@@ -8,7 +8,7 @@ namespace UserManaging.Infrastructure.Data.EntitiesConfig
     {
         public EntityToDTOMappingConfig()
         {
-            CreateMap<User, IdentityUser>().ReverseMap();
+            CreateMap<User, UserDTO>().ReverseMap();
         }
     }
 }

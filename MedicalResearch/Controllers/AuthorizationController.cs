@@ -1,4 +1,5 @@
 using IdentityServer4;
+using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -62,19 +63,18 @@ namespace UserManaging.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userService.FindByNameAsync(model.UserName, cancellationToken);
+                var checkedUser = await _userService.FindByNameAsync(model.UserName, cancellationToken);
 
-                if (user != null)
+                if (checkedUser != null)
                 {
                     return BadRequest("Sorry, this email is already registered");
                 }
 
-                user = new User
+                var user = new User
                 {
                     Email = model.Email,
                     UserName = model.UserName,
-                    PhoneNumber = model.PhoneNumber,
-                    PasswordHash = Utility.Encrypt(model.Password)
+                    PhoneNumber = model.PhoneNumber
                 };
 
                 await _userService.CreateAsync(user, cancellationToken);
@@ -90,8 +90,11 @@ namespace UserManaging.API.Controllers
         }
 
         [HttpGet("Logout")]
-        public async Task<IActionResult> Logout(string logoutId)
-        {
+        public async Task<IActionResult> Logout(string? logoutId)
+         {
+            if (logoutId is null)
+                logoutId = await _interaction.CreateLogoutContextAsync();
+
             var logout = await _interaction.GetLogoutContextAsync(logoutId);
 
             await HttpContext.SignOutAsync();
@@ -99,7 +102,7 @@ namespace UserManaging.API.Controllers
             Response.Cookies.Delete(".AspNetCore.Identity.Application");
 
             if (logout.PostLogoutRedirectUri is null)
-                logout.PostLogoutRedirectUri = HttpContext.Request.PathBase;
+                logout.PostLogoutRedirectUri = @"https://" + HttpContext.Request.Host.Value;
 
             return Redirect(logout.PostLogoutRedirectUri);
         }

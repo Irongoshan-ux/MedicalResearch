@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using UserManaging.Domain.Entities.Users;
 using UserManaging.Domain.Interfaces;
@@ -9,19 +8,17 @@ namespace UserManaging.Infrastructure.Data.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _context;
-        private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
         private bool disposedValue;
 
-        private IQueryable<User> UserWithImages =>
+        private IQueryable<User> UsersWithImages =>
          _userManager.Users
                     .AsNoTracking()
                     .Include(x => x.Images);
 
-        public UserRepository(ApplicationDbContext userContext, IMapper mapper, UserManager<User> userManager)
+        public UserRepository(ApplicationDbContext userContext, UserManager<User> userManager)
         {
             _context = userContext;
-            _mapper = mapper;
             _userManager = userManager;
         }
 
@@ -43,14 +40,14 @@ namespace UserManaging.Infrastructure.Data.Repositories
 
         public Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
-            return UserWithImages
+            return UsersWithImages
                 .Where(x => x.Id == userId)
                 .FirstAsync();
         }
 
         public Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
-            return UserWithImages
+            return UsersWithImages
                 .Where(x => x.NormalizedUserName == normalizedUserName)
                 .FirstAsync(cancellationToken);
         }
@@ -67,14 +64,14 @@ namespace UserManaging.Infrastructure.Data.Repositories
         public Task<User> GetUserByCredentialsAsync(string email, string passwordHash,
             CancellationToken cancellationToken)
         {
-            return UserWithImages
-                .FirstAsync(x => (x.Email == email) && (x.PasswordHash == passwordHash),
+            return _userManager.Users
+                .FirstOrDefaultAsync(x => (x.Email == email) && (x.PasswordHash == passwordHash),
                     cancellationToken);
         }
 
         public Task<User> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
         {
-            return UserWithImages
+            return UsersWithImages
                 .FirstAsync(x => x.Email == email, cancellationToken);
         }
 

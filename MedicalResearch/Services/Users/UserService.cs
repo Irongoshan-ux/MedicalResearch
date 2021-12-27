@@ -1,4 +1,6 @@
-﻿using UserManaging.Domain.Entities.Users;
+﻿using AutoMapper;
+using UserManaging.API.DTOs.Users;
+using UserManaging.Domain.Entities.Users;
 using UserManaging.Domain.Interfaces;
 
 namespace UserManaging.API.Services.Users
@@ -6,41 +8,57 @@ namespace UserManaging.API.Services.Users
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository;
+            _mapper = mapper;
         }
 
         public async Task<bool> CreateAsync(User user, CancellationToken cancellationToken)
         {
+            user.PasswordHash = Utilities.Utility.Encrypt(user.PasswordHash);
+
             var result = await _userRepository.CreateAsync(user, cancellationToken);
 
             return result.Succeeded;
         }
 
-        public async Task<bool> DeleteAsync(User user, CancellationToken cancellationToken)
+        public async Task<bool> DeleteAsync(string userEmail, CancellationToken cancellationToken)
         {
-            user = await GetUserRequiredInfoAsync(user, cancellationToken);
+            var user = await GetUserRequiredInfoAsync(await FindByEmailAsync(userEmail, cancellationToken),
+                cancellationToken);
 
             var result = await _userRepository.DeleteAsync(user, cancellationToken);
 
             return result.Succeeded;
         }
 
-        public Task<User> FindByEmailAsync(string email, CancellationToken cancellationToken)
+        public async Task<UserDTO> FindByEmailAsync(string email, CancellationToken cancellationToken)
+        {
+            var user = await _userRepository.GetUserByEmailAsync(email, cancellationToken);
+
+            return _mapper.Map<UserDTO>(user);
+        }
+
+        public Task<User> FindEntityByEmailAsync(string email, CancellationToken cancellationToken)
         {
             return _userRepository.GetUserByEmailAsync(email, cancellationToken);
         }
 
-        public Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
+        public async Task<UserDTO> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
-            return _userRepository.FindByIdAsync(userId, cancellationToken);
+            var user = await _userRepository.FindByIdAsync(userId, cancellationToken);
+
+            return _mapper.Map<UserDTO>(user);
         }
 
-        public Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
+        public async Task<UserDTO> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
-            return _userRepository.FindByNameAsync(normalizedUserName, cancellationToken);
+            var user = await _userRepository.FindByNameAsync(normalizedUserName, cancellationToken);
+
+            return _mapper.Map<UserDTO>(user);
         }
 
         public Task<string> GetNormalizedUserNameAsync(User user, CancellationToken cancellationToken)
@@ -58,36 +76,39 @@ namespace UserManaging.API.Services.Users
             return _userRepository.GetUserNameAsync(user, cancellationToken);
         }
 
-        public async Task SetNormalizedUserNameAsync(User user, string normalizedName, CancellationToken cancellationToken)
+        public async Task SetNormalizedUserNameAsync(UserDTO userDto, string normalizedName,
+            CancellationToken cancellationToken)
         {
-            user = await GetUserRequiredInfoAsync(user, cancellationToken);
+            var user = await GetUserRequiredInfoAsync(userDto, cancellationToken);
 
             await _userRepository.SetNormalizedUserNameAsync(user, normalizedName, cancellationToken);
         }
 
-        public async Task SetUserNameAsync(User user, string userName, CancellationToken cancellationToken)
+        public async Task SetUserNameAsync(UserDTO userDto, string userName, CancellationToken cancellationToken)
         {
-            user = await GetUserRequiredInfoAsync(user, cancellationToken);
+            var user = await GetUserRequiredInfoAsync(userDto, cancellationToken);
 
             await _userRepository.SetUserNameAsync(user, userName, cancellationToken);
         }
 
-        public async Task<bool> UpdateAsync(User user, CancellationToken cancellationToken)
+        public async Task<bool> UpdateAsync(UserDTO userDto, CancellationToken cancellationToken)
         {
-            user = await GetUserRequiredInfoAsync(user, cancellationToken);
+            var user = await GetUserRequiredInfoAsync(userDto, cancellationToken);
 
             var result = await _userRepository.UpdateAsync(user, cancellationToken);
 
             return result.Succeeded;
         }
 
-        private async Task<User> GetUserRequiredInfoAsync(User user, CancellationToken cancellationToken)
+        private async Task<User> GetUserRequiredInfoAsync(UserDTO userDto, CancellationToken cancellationToken)
         {
-            var userFromDb = await FindByEmailAsync(user.Email, cancellationToken);
+            var userFromDb = await _userRepository.GetUserByEmailAsync(userDto.Email, cancellationToken);
+
+            var user = _mapper.Map<User>(userDto);
 
             user.ConcurrencyStamp = userFromDb?.ConcurrencyStamp;
             user.Id = userFromDb?.Id;
-
+            
             if (user.Images is null) user.Images = userFromDb?.Images;
 
             return user;

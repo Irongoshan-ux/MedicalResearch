@@ -25,9 +25,9 @@ namespace UserManaging.API.Controllers
         }
 
         [HttpDelete("DeleteUser")]
-        public async Task<IActionResult> DeleteAsync(User user, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteAsync(string userEmail, CancellationToken cancellationToken)
         {
-            if (await _userService.DeleteAsync(user, cancellationToken))
+            if (await _userService.DeleteAsync(userEmail, cancellationToken))
                 return Ok();
 
             return BadRequest();
@@ -45,7 +45,7 @@ namespace UserManaging.API.Controllers
         }
 
         [HttpPut("Update")]
-        public async Task<IActionResult> UpdateUserAsync(User user, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateUserAsync(UserDTO user, CancellationToken cancellationToken)
         {
             if (await _userService.UpdateAsync(user, cancellationToken))
                 return Ok();
@@ -54,7 +54,7 @@ namespace UserManaging.API.Controllers
         }
 
         [HttpPatch("SetUserName")]
-        public async Task<IActionResult> SetUserNameAsync(User user, string userName, CancellationToken cancellationToken)
+        public async Task<IActionResult> SetUserNameAsync(UserDTO user, string userName, CancellationToken cancellationToken)
         {
             await _userService.SetUserNameAsync(user, userName, cancellationToken);
 
@@ -62,7 +62,7 @@ namespace UserManaging.API.Controllers
         }
 
         [HttpPatch("SetNormalizedUserName")]
-        public async Task<IActionResult> SetNormalizedUserNameAsync(User user,
+        public async Task<IActionResult> SetNormalizedUserNameAsync(UserDTO user,
                                                                           string normalizedName,
                                                                           CancellationToken cancellationToken)
         {
@@ -89,13 +89,13 @@ namespace UserManaging.API.Controllers
         }
 
         [HttpGet("FindByName")]
-        public Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
+        public Task<UserDTO> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
             return _userService.FindByNameAsync(normalizedUserName, cancellationToken);
         }
 
         [HttpGet("FindById")]
-        public Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
+        public Task<UserDTO> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
             return _userService.FindByIdAsync(userId, cancellationToken);
         }

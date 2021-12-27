@@ -20,7 +20,7 @@ namespace UserManaging.Infrastructure.Configuration
 
         public async Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
-            var user = await _userService.FindByEmailAsync(GetUserEmailByClaims(context.Subject.Claims),
+            var user = await _userService.FindEntityByEmailAsync(GetUserEmailByClaims(context.Subject.Claims),
                 CancellationToken.None);
 
             var claims = await GetClaimsAsync(user);
