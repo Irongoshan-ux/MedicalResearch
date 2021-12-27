@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using UserManaging.Domain.Entities.Images;
 using UserManaging.Domain.Entities.Users;
 using UserManaging.Infrastructure.Data.EntitiesConfig;
 
 namespace UserManaging.Infrastructure.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<User>
     {
+        public DbSet<Image> Images { get; set; }
+
         public ApplicationDbContext()
         {
             Database.EnsureCreated();

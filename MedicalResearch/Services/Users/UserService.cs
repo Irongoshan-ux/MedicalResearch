@@ -82,14 +82,13 @@ namespace UserManaging.API.Services.Users
         }
 
         private async Task<User> GetUserRequiredInfoAsync(User user, CancellationToken cancellationToken)
-{
+        {
             var userFromDb = await FindByEmailAsync(user.Email, cancellationToken);
 
-            if (userFromDb != null)
-            {
-                user.ConcurrencyStamp = userFromDb.ConcurrencyStamp;
-                user.Id = userFromDb.Id;
-            }
+            user.ConcurrencyStamp = userFromDb?.ConcurrencyStamp;
+            user.Id = userFromDb?.Id;
+
+            if (user.Images is null) user.Images = userFromDb?.Images;
 
             return user;
         }
