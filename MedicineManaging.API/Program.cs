@@ -1,4 +1,6 @@
 using MediatR;
+using MedicineManaging.API.GraphQL.Queries;
+using MedicineManaging.API.GraphQL.Types;
 using MedicineManaging.Domain.Interfaces;
 using MedicineManaging.Infrastructure.Data;
 using MedicineManaging.Infrastructure.Data.Config;
@@ -29,6 +31,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IMedicineRepository, MedicineRepository>();
 
+builder.Services
+      .AddGraphQLServer()
+      .AddQueryType<Query>()
+      .AddType<MedicineType>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -43,5 +50,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGraphQL("/api/graphql");
 
 app.Run();
