@@ -1,4 +1,5 @@
 using MediatR;
+using MedicineManaging.API.GraphQL.Mutations;
 using MedicineManaging.API.GraphQL.Queries;
 using MedicineManaging.API.GraphQL.Types;
 using MedicineManaging.Domain.Interfaces;
@@ -33,7 +34,8 @@ builder.Services.AddScoped<IMedicineRepository, MedicineRepository>();
 
 builder.Services
       .AddGraphQLServer()
-      .AddQueryType<Query>()
+           .AddQueryType<Query>()
+           .AddMutationType<Mutation>()
       .AddType<MedicineType>();
 
 var app = builder.Build();

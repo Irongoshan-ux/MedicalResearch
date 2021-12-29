@@ -19,7 +19,7 @@ namespace UserManaging.Infrastructure.Configuration
         {
             yield return new Client
             {
-                ClientId = "client_blazor",
+                ClientId = "client",
                 AllowedGrantTypes = GrantTypes.Code,
                 RequireClientSecret = false,
                 RequireConsent = false,
@@ -31,10 +31,7 @@ namespace UserManaging.Infrastructure.Configuration
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile
                 },
-                RedirectUris = { "https://localhost:5001/authentication/login-callback" },
-                PostLogoutRedirectUris = { "https://localhost:5001/authentication/logout-callback" },
-                ClientSecrets = { new Secret("BlazorSecret".Sha512()) },
-                AllowedCorsOrigins = { "https://localhost:5001" }
+                ClientSecrets = { new Secret("secret".Sha512()) },
             };
         }
 

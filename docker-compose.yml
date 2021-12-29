@@ -1,0 +1,40 @@
+version: '3.4'
+
+services:
+  mongodb:
+    container_name: mongo
+    image: mongo
+    restart: always
+    volumes:
+      - ${WEBAPP_STORAGE_HOME}/site:/data/db
+      #- ./data:/data/db
+    ports:
+      - "27018:27018"
+
+  mssql:
+    image: "mcr.microsoft.com/mssql/server"
+    environment:
+      SA_PASSWORD: "somepassword.01"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "3306:3306"
+
+  medicinemanaging.api:
+    image: ${DOCKER_REGISTRY-}medicinemanagingapi
+    build:
+      context: .
+      dockerfile: MedicineManaging.API/Dockerfile
+    ports:
+      - "7239:7239"
+    depends_on:
+      - mongodb
+
+  usermanaging.api:
+    image: ${DOCKER_REGISTRY-}usermanagingapi
+    build:
+      context: .
+      dockerfile: MedicalResearch/Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mssql
