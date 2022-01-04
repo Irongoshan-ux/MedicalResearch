@@ -16,5 +16,6 @@ namespace UserManaging.Domain.Interfaces
         Task<UserDTO> FindByIdAsync(string userId, CancellationToken cancellationToken);
         Task<UserDTO> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken);
         Task<User> FindEntityByEmailAsync(string email, CancellationToken cancellationToken);
+        Task<bool> IsInRoleAsync(UserDTO user, string role);
     }
 }

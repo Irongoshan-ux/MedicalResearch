@@ -26,12 +26,17 @@ namespace UserManaging.API.Utilities
 
             if (values.Count <= 0) return null;
 
-            var token = values.FirstOrDefault().Replace("Bearer ", "");
+            if (values.FirstOrDefault().Contains("Bearer"))
+            {
 
-            var handler = new JwtSecurityTokenHandler();
-            var jsonToken = handler.ReadToken(token);
+                var token = values.FirstOrDefault().Replace("Bearer ", "");
 
-            return jsonToken as JwtSecurityToken;
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token);
+
+                return jsonToken as JwtSecurityToken;
+            }
+            else return null;
         }
     }
 }

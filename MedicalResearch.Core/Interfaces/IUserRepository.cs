@@ -7,5 +7,6 @@ namespace UserManaging.Domain.Interfaces
     {
         Task<User> GetUserByCredentialsAsync(string email, string passwordHash, CancellationToken cancellationToken);
         Task<User> GetUserByEmailAsync(string email, CancellationToken cancellationToken);
+        Task<bool> IsInRoleAsync(User user, string role);
     }
 }

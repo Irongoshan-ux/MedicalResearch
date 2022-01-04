@@ -100,6 +100,13 @@ namespace UserManaging.API.Services.Users
             return result.Succeeded;
         }
 
+        public async Task<bool> IsInRoleAsync(UserDTO user, string role)
+        {
+            var userFromDb = await GetUserRequiredInfoAsync(user, CancellationToken.None);
+
+            return await _userRepository.IsInRoleAsync(userFromDb, role);
+        }
+
         private async Task<User> GetUserRequiredInfoAsync(UserDTO userDto, CancellationToken cancellationToken)
         {
             var userFromDb = await _userRepository.GetUserByEmailAsync(userDto.Email, cancellationToken);

@@ -41,6 +41,7 @@ namespace UserManaging.Infrastructure.Data.Repositories
         public Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
             return UsersWithImages
+                .AsNoTracking()
                 .Where(x => x.Id == userId)
                 .FirstAsync();
         }
@@ -48,6 +49,7 @@ namespace UserManaging.Infrastructure.Data.Repositories
         public Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
             return UsersWithImages
+                .AsNoTracking()
                 .Where(x => x.NormalizedUserName == normalizedUserName)
                 .FirstAsync(cancellationToken);
         }
@@ -65,6 +67,7 @@ namespace UserManaging.Infrastructure.Data.Repositories
             CancellationToken cancellationToken)
         {
             return _userManager.Users
+                .AsNoTracking()
                 .FirstOrDefaultAsync(x => (x.Email == email) && (x.PasswordHash == passwordHash),
                     cancellationToken);
         }
@@ -72,6 +75,7 @@ namespace UserManaging.Infrastructure.Data.Repositories
         public Task<User> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
         {
             return UsersWithImages
+                .AsNoTracking()
                 .FirstAsync(x => x.Email == email, cancellationToken);
         }
 
@@ -108,6 +112,8 @@ namespace UserManaging.Infrastructure.Data.Repositories
         {
             return _userManager.UpdateAsync(user);
         }
+
+        public Task<bool> IsInRoleAsync(User user, string role) => _userManager.IsInRoleAsync(user, role);
 
         protected virtual void Dispose(bool disposing)
         {
