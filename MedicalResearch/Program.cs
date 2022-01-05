@@ -23,7 +23,17 @@ var configuration = new ConfigurationBuilder()
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    // don't added to Authorization Header
+    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme()
+    {
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Description = "Please insert JWT with Bearer into this field",
+        Name = "Authorization",
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey
+    });
+});
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -94,9 +104,11 @@ app.MapControllers();
 app.Use(async (context, next) =>
 {
     var token = HttpUserHelper.ParseSecurityToken(context);
-    
-    if (token is null && !(context.Request.Path.Value.ToLower().Contains("login") 
-    || context.Request.Path.Value.ToLower().Contains("register")))
+
+    var webPath = context.Request.Path.Value.ToLower();
+
+    if (token is null && !(webPath.Contains("login")
+    || webPath.Contains("register")))
     {
         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
     }
