@@ -76,7 +76,7 @@ namespace UserManaging.Infrastructure.Data.Repositories
         {
             return UsersWithImages
                 .AsNoTracking()
-                .FirstAsync(x => x.Email == email, cancellationToken);
+                .FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
         }
 
         public Task<string> GetUserIdAsync(User user, CancellationToken cancellationToken)

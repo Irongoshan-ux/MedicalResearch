@@ -3,6 +3,7 @@ using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 using UserManaging.API.DTOs.Users;
 using UserManaging.API.Utilities;
 using UserManaging.Domain.Entities.Users;
@@ -48,7 +49,9 @@ namespace UserManaging.API.Controllers
 
                     _logger.LogInformation($"User has succesfully logged in with email: {user.Email}");
 
-                    return Ok();
+                    _logger.LogInformation(HttpContext.Response.StatusCode.ToString());
+
+                    return Ok(GetJwtTokenForUser());
                 }
             }
 
@@ -62,7 +65,7 @@ namespace UserManaging.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var checkedUser = await _userService.FindByNameAsync(model.UserName, cancellationToken);
+                var checkedUser = await _userService.FindByEmailAsync(model.Email, cancellationToken);
 
                 if (checkedUser != null)
                 {
@@ -73,7 +76,8 @@ namespace UserManaging.API.Controllers
                 {
                     Email = model.Email,
                     UserName = model.UserName,
-                    PhoneNumber = model.PhoneNumber
+                    PhoneNumber = model.PhoneNumber,
+                    PasswordHash = Utility.Encrypt(model.Password)
                 };
 
                 await _userService.CreateAsync(user, cancellationToken);
@@ -82,7 +86,7 @@ namespace UserManaging.API.Controllers
 
                 await AuthorizeAsync(user);
 
-                return Ok("Successfully authorized");
+                return Ok(GetJwtTokenForUser());
             }
 
             return BadRequest();
@@ -104,6 +108,21 @@ namespace UserManaging.API.Controllers
                 logout.PostLogoutRedirectUri = @"https://" + HttpContext.Request.Host.Value;
 
             return Redirect(logout.PostLogoutRedirectUri);
+        }
+
+        private string GetJwtTokenForUser()
+        {
+            var token = new JwtSecurityToken(
+                claims: new[]
+                {
+                    HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("sub"))
+                },
+                issuer: "API",
+                expires: DateTime.Now.AddMinutes(5.0));
+
+            var handler = new JwtSecurityTokenHandler();
+
+            return handler.WriteToken(token);
         }
 
         private Task AuthorizeAsync(User user) => 

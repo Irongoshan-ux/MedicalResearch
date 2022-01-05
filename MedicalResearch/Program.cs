@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using UserManaging.API.Services.Users;
 using UserManaging.API.Utilities;
 using UserManaging.Domain.Entities.Users;
@@ -96,7 +95,8 @@ app.Use(async (context, next) =>
 {
     var token = HttpUserHelper.ParseSecurityToken(context);
     
-    if (token is null && !context.Request.Path.Value.ToLower().Contains("login"))
+    if (token is null && !(context.Request.Path.Value.ToLower().Contains("login") 
+    || context.Request.Path.Value.ToLower().Contains("register")))
     {
         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
     }

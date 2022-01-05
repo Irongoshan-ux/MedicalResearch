@@ -54,7 +54,7 @@ namespace UserManaging.API.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> UpdateUserAsync(UserDTO user, CancellationToken cancellationToken)
         {
-            if (await IsCurrentUserAdminAsync())
+            if (await IsCurrentUserAdminAsync() || (await GetCurrentUserAsync()).Email.Equals(user.Email))
             {
                 if (await _userService.UpdateAsync(user, cancellationToken))
                     return Ok();
