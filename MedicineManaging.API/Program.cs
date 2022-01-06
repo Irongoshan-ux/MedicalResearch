@@ -2,6 +2,7 @@ using MediatR;
 using MedicineManaging.API.GraphQL.Mutations;
 using MedicineManaging.API.GraphQL.Queries;
 using MedicineManaging.API.GraphQL.Types;
+using MedicineManaging.API.Utilities;
 using MedicineManaging.Domain.Interfaces;
 using MedicineManaging.Infrastructure.Data;
 using MedicineManaging.Infrastructure.Data.Config;
@@ -54,5 +55,18 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapGraphQL("/api/graphql");
+
+app.Use(async (context, next) =>
+{
+    var token = JwtTokenParser.ParseSecurityToken(context);
+
+    bool isValid = token is not null && JwtTokenValidator.ValidateToken(token);
+
+    if (!isValid)
+    {
+        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+    }
+    else await next?.Invoke();
+});
 
 app.Run();

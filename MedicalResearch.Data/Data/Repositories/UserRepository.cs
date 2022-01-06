@@ -79,9 +79,11 @@ namespace UserManaging.Infrastructure.Data.Repositories
                 .FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
         }
 
-        public Task<string> GetUserIdAsync(User user, CancellationToken cancellationToken)
+        public async Task<string> GetUserIdAsync(User user, CancellationToken cancellationToken)
         {
-            return _userManager.GetUserIdAsync(user);
+            var userFromDb = await _context.Users.FirstOrDefaultAsync(x => x.Email == user.Email);
+
+            return userFromDb?.Id;
         }
 
         public Task<string> GetUserNameAsync(User user, CancellationToken cancellationToken)
