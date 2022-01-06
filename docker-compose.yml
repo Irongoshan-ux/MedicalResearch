@@ -9,6 +9,7 @@ services:
       - ${WEBAPP_STORAGE_HOME}/site:/data/db
       #- ./data:/data/db
     ports:
+      - "27017:27017"
       - "27018:27018"
 
   mssql:
@@ -25,7 +26,7 @@ services:
       context: .
       dockerfile: MedicineManaging.API/Dockerfile
     ports:
-      - "7239:7239"
+      - "10000:80"
     depends_on:
       - mongodb
 
@@ -35,6 +36,15 @@ services:
       context: .
       dockerfile: MedicalResearch/Dockerfile
     ports:
-      - "8000:8000"
+      - "9000:80"
     depends_on:
       - mssql
+
+
+networks:
+  vpcbr:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.5.0.0/16
+         gateway: 10.5.0.1
