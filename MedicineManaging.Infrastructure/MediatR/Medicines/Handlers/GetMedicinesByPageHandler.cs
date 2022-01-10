@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using MedicineManaging.Domain.Entities.Medicines;
 using MedicineManaging.Domain.Interfaces;
-using MedicineManaging.Infrastructure.MediatR.Queries;
+using MedicineManaging.Infrastructure.MediatR.Medicines.Queries;
 
-namespace MedicineManaging.Infrastructure.MediatR.Handlers
+namespace MedicineManaging.Infrastructure.MediatR.Medicines.Handlers
 {
     public class GetMedicinesByPageHandler : IRequestHandler<GetMedicinesByPageQuery, IEnumerable<Medicine>>
     {
@@ -15,6 +15,6 @@ namespace MedicineManaging.Infrastructure.MediatR.Handlers
         }
 
         public Task<IEnumerable<Medicine>> Handle(GetMedicinesByPageQuery request, CancellationToken cancellationToken) =>
-            _medicineRepository.FindByPageAsync(request.page, request.pageSize);
+            _medicineRepository.FindByPageAsync(request.Page, request.PageSize);
     }
 }

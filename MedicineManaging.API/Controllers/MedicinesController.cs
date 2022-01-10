@@ -1,7 +1,7 @@
 using MediatR;
 using MedicineManaging.Domain.Entities.Medicines;
-using MedicineManaging.Infrastructure.MediatR.Commands;
-using MedicineManaging.Infrastructure.MediatR.Queries;
+using MedicineManaging.Infrastructure.MediatR.Medicines.Commands;
+using MedicineManaging.Infrastructure.MediatR.Medicines.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MedicineManaging.API.Controllers

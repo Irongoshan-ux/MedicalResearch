@@ -7,7 +7,8 @@ using MedicineManaging.Domain.Interfaces;
 using MedicineManaging.Infrastructure.Data;
 using MedicineManaging.Infrastructure.Data.Config;
 using MedicineManaging.Infrastructure.Data.Repositories;
-using MedicineManaging.Infrastructure.MediatR.Queries;
+using MedicineManaging.Infrastructure.MediatR.Clinics.Queries;
+using MedicineManaging.Infrastructure.MediatR.Medicines.Queries;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +33,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IMedicineRepository, MedicineRepository>();
+builder.Services.AddScoped<IClinicRepository, ClinicRepository>();
 
 builder.Services
       .AddGraphQLServer()

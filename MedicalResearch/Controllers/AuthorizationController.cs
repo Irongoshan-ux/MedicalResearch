@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using UserManaging.API.DTOs.Users;
 using UserManaging.API.Utilities;
 using UserManaging.Domain.Entities.Users;
@@ -51,7 +52,7 @@ namespace UserManaging.API.Controllers
 
                     _logger.LogInformation(HttpContext.Response.StatusCode.ToString());
 
-                    return Ok(GetJwtTokenForUser());
+                    return Ok(await GetJwtTokenForUserAsync(user));
                 }
             }
 
@@ -86,7 +87,7 @@ namespace UserManaging.API.Controllers
 
                 await AuthorizeAsync(user);
 
-                return Ok(GetJwtTokenForUser());
+                return Ok(await GetJwtTokenForUserAsync(user));
             }
 
             return BadRequest();
@@ -110,11 +111,12 @@ namespace UserManaging.API.Controllers
             return Redirect(logout.PostLogoutRedirectUri);
         }
 
-        private string GetJwtTokenForUser()
+        private async Task<string> GetJwtTokenForUserAsync(User user)
         {
             var token = new JwtSecurityToken(
                 claims: new[]
                 {
+                    new Claim("role", (await _userManager.GetRolesAsync(user)).First().ToLower()),
                     HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("sub"))
                 },
                 issuer: "API",

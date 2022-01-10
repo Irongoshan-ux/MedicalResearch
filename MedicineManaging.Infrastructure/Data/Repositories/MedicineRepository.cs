@@ -2,7 +2,6 @@
 using MedicineManaging.Domain.Interfaces;
 using MedicineManaging.Infrastructure.Data.Config;
 using MongoDB.Driver;
-using System.Linq.Expressions;
 
 namespace MedicineManaging.Infrastructure.Data.Repositories
 {
@@ -22,13 +21,10 @@ namespace MedicineManaging.Infrastructure.Data.Repositories
             _medicines.InsertOneAsync(medicine);
 
         public Task DeleteAsync(Medicine medicine) =>
-            _medicines.DeleteOneAsync(x => x.Id == medicine.Id);
+            _medicines.DeleteOneAsync(x => x.Equals(medicine));
 
         public Task DeleteAsync(string medicineId) =>
-            DeleteAsync(x => x.Id == medicineId);
-
-        public Task DeleteAsync(Expression<Func<Medicine, bool>> expression) =>
-            _medicines.DeleteOneAsync(expression);
+            _medicines.DeleteOneAsync(x => x.Id == medicineId);
 
         public Task<IEnumerable<Medicine>> FindAllAsync() =>
             Task.FromResult(_medicines.AsQueryable().ToEnumerable());

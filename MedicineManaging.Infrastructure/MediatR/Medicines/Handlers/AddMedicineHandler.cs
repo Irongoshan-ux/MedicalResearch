@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using MedicineManaging.Domain.Interfaces;
-using MedicineManaging.Infrastructure.MediatR.Commands;
+using MedicineManaging.Infrastructure.MediatR.Medicines.Commands;
 
-namespace MedicineManaging.Infrastructure.MediatR.Handlers
+namespace MedicineManaging.Infrastructure.MediatR.Medicines.Handlers
 {
     public class AddMedicineHandler : IRequestHandler<AddMedicineCommand, Unit>
     {
