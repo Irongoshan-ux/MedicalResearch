@@ -81,11 +81,9 @@ builder.Services.AddAutoMapper(cfg => cfg.AddProfile<EntityToDTOMappingConfig>()
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseCors(builder =>
 {
@@ -105,14 +103,20 @@ app.Use(async (context, next) =>
 {
     var token = HttpUserHelper.ParseSecurityToken(context);
 
-    var webPath = context.Request.Path.Value.ToLower();
-
-    if (token is null && !(webPath.Contains("login")
-    || webPath.Contains("register")))
+    if (token is null)
     {
-        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        var user = context.User.Claims.FirstOrDefault(claim => claim.Type.Equals("sub"))?.Value;
+
+        if (user is null)
+        {
+            var webPath = context.Request.Path.Value.ToLower();
+
+            if (!(webPath.Contains("login") || webPath.Contains("register") || webPath.Equals("/swagger/index.html")))
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        }
     }
-    else await next.Invoke();
+
+    await next();
 });
 
 app.Run();

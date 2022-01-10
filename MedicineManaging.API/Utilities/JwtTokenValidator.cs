@@ -6,11 +6,11 @@ namespace MedicineManaging.API.Utilities
     {
         public static bool ValidateToken(JwtSecurityToken token)
         {
-            var IssuedIsValid = token.Issuer.Equals("API");
+            var issuerIsValid = token.Issuer.Equals("API");
 
             var assignedUserEmail = token.Claims.First(claim => claim.Type.Equals("sub")).Value;
             
-            return IssuedIsValid && (assignedUserEmail != null);
+            return issuerIsValid && assignedUserEmail != null;
         }
     }
 }

@@ -37,6 +37,7 @@ services:
       dockerfile: MedicalResearch/Dockerfile
     ports:
       - "9000:80"
+      - "9001:443"
     depends_on:
       - mssql
 

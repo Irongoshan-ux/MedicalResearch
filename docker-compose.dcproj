@@ -6,6 +6,8 @@
     <ProjectGuid>604177e0-70f2-41a9-b51f-741c8a66fee1</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
+  </PropertyGroup>
+  <PropertyGroup>
     <DockerServiceName>medicinemanaging.api</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>

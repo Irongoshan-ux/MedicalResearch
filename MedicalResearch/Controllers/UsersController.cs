@@ -23,6 +23,8 @@ namespace UserManaging.API.Controllers
             {
                 if (await _userService.CreateAsync(user, cancellationToken))
                     return Ok(user);
+
+                else return StatusCode(StatusCodes.Status500InternalServerError, "User has been already registered.");
             }
             
             return StatusCode(StatusCodes.Status403Forbidden);

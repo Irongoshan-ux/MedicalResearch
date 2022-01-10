@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using UserManaging.API.DTOs.Users;
 using UserManaging.Domain.Entities.Users;
 using UserManaging.Domain.Interfaces;
@@ -20,9 +21,16 @@ namespace UserManaging.API.Services.Users
         {
             user.PasswordHash = Utilities.Utility.Encrypt(user.PasswordHash);
 
-            var result = await _userRepository.CreateAsync(user, cancellationToken);
+            try
+            {
+                await _userRepository.CreateAsync(user, cancellationToken);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
 
-            return result.Succeeded;
         }
 
         public async Task<bool> DeleteAsync(string userEmail, CancellationToken cancellationToken)

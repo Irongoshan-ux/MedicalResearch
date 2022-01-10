@@ -15,7 +15,7 @@ namespace UserManaging.API.Utilities
             var securityToken = ParseSecurityToken(context);
             var userEmail = securityToken is not null?
                 securityToken.Claims.First(claim => claim.Type.Equals("sub")).Value
-                : string.Empty;
+                : context.User.Claims.FirstOrDefault(claim => claim.Type.Equals("sub"))?.Value;
 
             return userEmail;
         }
