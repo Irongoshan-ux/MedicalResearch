@@ -41,6 +41,17 @@ namespace MedicineManaging.API.Controllers
             return Ok(medicines);
         }
 
+        [HttpGet]
+        [Route("FindMedicinesByPage")]
+        public async Task<IActionResult> GetMedicinesByPageAsync(int page = 0, int pageSize = 5)
+        {
+            var medicines = await _mediator.Send(new GetMedicinesByPageQuery(page, pageSize));
+
+            if (medicines is null) return NotFound();
+
+            return Ok(medicines);
+        }
+
         [HttpPost]
         [Route("Create")]
         public async Task<IActionResult> AddMedicineAsync(Medicine medicine)

@@ -36,6 +36,9 @@ namespace MedicineManaging.Infrastructure.Data.Repositories
         public Task<Medicine> FindByIdAsync(string medicineId) =>
             _medicines.Find(x => x.Id == medicineId).FirstOrDefaultAsync();
 
+        public Task<IEnumerable<Medicine>> FindByPageAsync(int page = 1, int pageSize = 5) =>
+            Task.FromResult(_medicines.AsQueryable().Skip((page - 1) * pageSize).Take(pageSize).AsEnumerable());
+
         public Task UpdateAsync(string medicineId, Medicine medicine) =>
             _medicines.ReplaceOneAsync(x => x.Id == medicineId, medicine);
     }
