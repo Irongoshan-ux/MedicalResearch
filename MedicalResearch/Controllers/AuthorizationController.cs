@@ -116,7 +116,7 @@ namespace UserManaging.API.Controllers
             var token = new JwtSecurityToken(
                 claims: new[]
                 {
-                    new Claim("role", (await _userManager.GetRolesAsync(user)).First().ToLower()),
+                    new Claim(ClaimTypes.Role, (await _userManager.GetRolesAsync(user)).First().ToLower()),
                     HttpContext.User.Claims.FirstOrDefault(x => x.Type.Contains("sub"))
                 },
                 issuer: "API",

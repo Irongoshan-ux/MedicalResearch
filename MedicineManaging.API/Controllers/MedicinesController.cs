@@ -1,4 +1,5 @@
 using MediatR;
+using MedicineManaging.API.Utilities.Attributes;
 using MedicineManaging.Domain.Entities.Medicines;
 using MedicineManaging.Infrastructure.MediatR.Medicines.Commands;
 using MedicineManaging.Infrastructure.MediatR.Medicines.Queries;
@@ -32,6 +33,7 @@ namespace MedicineManaging.API.Controllers
 
         [HttpGet]
         [Route("FindAll")]
+        [Access(Roles = new[] { "admin", "user" })]
         public async Task<IActionResult> GetMedicinesAsync()
         {
             var medicines = await _mediator.Send(new GetMedicinesQuery());
@@ -54,6 +56,7 @@ namespace MedicineManaging.API.Controllers
 
         [HttpPost]
         [Route("Create")]
+        [Access(Roles = new[] { "admin" })]
         public async Task<IActionResult> AddMedicineAsync(Medicine medicine)
         {
             await _mediator.Send(new AddMedicineCommand(medicine));

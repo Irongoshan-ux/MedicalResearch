@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace MedicineManaging.API.Utilities
 {
@@ -8,9 +9,9 @@ namespace MedicineManaging.API.Utilities
         {
             var issuerIsValid = token.Issuer.Equals("API");
 
-            var assignedUserEmail = token.Claims.First(claim => claim.Type.Equals("sub")).Value;
+            var assignedUserRole = token.Claims.First(claim => claim.Type == ClaimTypes.Role).Value;
             
-            return issuerIsValid && assignedUserEmail != null;
+            return issuerIsValid && assignedUserRole != null;
         }
     }
 }
