@@ -35,9 +35,15 @@ builder.Services.AddScoped<IMedicineRepository, MedicineRepository>();
 builder.Services.AddScoped<IClinicRepository, ClinicRepository>();
 
 builder.Services
-      .AddGraphQLServer()
-           .AddQueryType<Query>()
-           .AddMutationType<Mutation>()
+      .AddGraphQLServer("ClinicSchema")
+           .AddQueryType<ClinicQuery>()
+           .AddMutationType<ClinicMutation>()
+      .AddType<ClinicType>();
+
+builder.Services
+      .AddGraphQLServer("MedicineSchema")
+           .AddQueryType<MedicineQuery>()
+           .AddMutationType<MedicineMutation>()
       .AddType<MedicineType>();
 
 var app = builder.Build();
@@ -55,7 +61,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapGraphQL("/api/graphql");
+app.MapGraphQL("/api/graphql/clinic", "ClinicSchema");
+app.MapGraphQL("/api/graphql/medicine", "MedicineSchema");
 
 app.Use(async (context, next) =>
 {
@@ -63,7 +70,7 @@ app.Use(async (context, next) =>
 
     bool isValid = token is not null && JwtTokenValidator.ValidateToken(token);
 
-    if (!isValid)
+    if (!isValid && !context.Request.Path.Value.Contains("/api/graphql"))
     {
         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
     }

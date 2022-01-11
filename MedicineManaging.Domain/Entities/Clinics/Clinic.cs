@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MedicineManaging.Domain.Entities.Clinics
 {
@@ -14,6 +15,9 @@ namespace MedicineManaging.Domain.Entities.Clinics
         [RegularExpression("^[0-9]+$", ErrorMessage = IdErrorMessage)]
         public string Id { get; set; }
         public string Name { get; set; }
+
+        [ForeignKey("MedicineId")]
         public ICollection<MedicinesCountForClinic>? Medicines { get; set; }
+        public string MedicineId { get; set; }
     }
 }

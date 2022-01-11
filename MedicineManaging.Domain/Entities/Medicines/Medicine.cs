@@ -1,5 +1,5 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
 using System.ComponentModel.DataAnnotations;
 
 namespace MedicineManaging.Domain.Entities.Medicines
@@ -8,6 +8,7 @@ namespace MedicineManaging.Domain.Entities.Medicines
     {
         private const string IdErrorMessage = "ID must be a 24-digit number";
 
+        [Key]
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         [StringLength(24, MinimumLength = 24, ErrorMessage = IdErrorMessage)]
