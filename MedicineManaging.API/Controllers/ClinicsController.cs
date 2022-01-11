@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using MedicineManaging.API.Utilities.Attributes;
 using MedicineManaging.Domain.Entities.Clinics;
 using MedicineManaging.Infrastructure.MediatR.Clinics.Commands;
 using MedicineManaging.Infrastructure.MediatR.Clinics.Queries;
@@ -21,6 +22,7 @@ namespace MedicineManaging.API.Controllers
 
         [HttpGet]
         [Route("FindAll")]
+        [Access(Roles = new[] { "admin", "user" })]
         public async Task<IActionResult> GetClinicsAsync()
         {
             var clinics = await _mediator.Send(new GetClinicsQuery());
@@ -32,6 +34,7 @@ namespace MedicineManaging.API.Controllers
 
         [HttpGet]
         [Route("FindClinicsByPage")]
+        [Access(Roles = new[] { "admin", "user" })]
         public async Task<IActionResult> GetClinicsByPageAsync(int page = 0, int pageSize = 5)
         {
             var clinics = await _mediator.Send(new GetClinicsByPageQuery(page, pageSize));
@@ -43,6 +46,7 @@ namespace MedicineManaging.API.Controllers
 
         [HttpPost]
         [Route("Create")]
+        [Access(Roles = new[] { "admin" })]
         public async Task<IActionResult> AddClinicAsync(Clinic clinic)
         {
             await _mediator.Send(new AddClinicCommand(clinic));
@@ -52,6 +56,7 @@ namespace MedicineManaging.API.Controllers
 
         [HttpPut]
         [Route("Update")]
+        [Access(Roles = new[] { "admin" })]
         public async Task<IActionResult> UpdateClinicAsync(string id, Clinic clinic)
         {
             await _mediator.Send(new UpdateClinicCommand(id, clinic));
@@ -61,6 +66,7 @@ namespace MedicineManaging.API.Controllers
 
         [HttpDelete]
         [Route("Delete")]
+        [Access(Roles = new[] { "admin" })]
         public async Task<IActionResult> DeleteClinicAsync(string id)
         {
             await _mediator.Send(new DeleteClinicByIdCommand(id));

@@ -9,7 +9,7 @@ namespace MedicineManaging.API.Utilities
         {
             var issuerIsValid = token.Issuer.Equals("API");
 
-            var assignedUserRole = token.Claims.First(claim => claim.Type == ClaimTypes.Role).Value;
+            var assignedUserRole = token.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Role)?.Value;
             
             return issuerIsValid && assignedUserRole != null;
         }

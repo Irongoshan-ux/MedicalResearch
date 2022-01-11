@@ -10,9 +10,7 @@ namespace MedicineManaging.API.Utilities
             var role = GetUserRoleFromToken(token);
 
             if (role != null)
-            {
                 return roleNames.Contains(role);
-            }
 
             return false;
         }

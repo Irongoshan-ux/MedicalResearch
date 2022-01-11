@@ -33,7 +33,6 @@ namespace MedicineManaging.API.Controllers
 
         [HttpGet]
         [Route("FindAll")]
-        [Access(Roles = new[] { "admin", "user" })]
         public async Task<IActionResult> GetMedicinesAsync()
         {
             var medicines = await _mediator.Send(new GetMedicinesQuery());
@@ -66,6 +65,7 @@ namespace MedicineManaging.API.Controllers
 
         [HttpPut]
         [Route("Update")]
+        [Access(Roles = new[] { "admin" })]
         public async Task<IActionResult> UpdateMedicineAsync(string id, Medicine medicine)
         {
             await _mediator.Send(new UpdateMedicineCommand(id, medicine));
@@ -75,6 +75,7 @@ namespace MedicineManaging.API.Controllers
 
         [HttpDelete]
         [Route("Delete")]
+        [Access(Roles = new[] { "admin" })]
         public async Task<IActionResult> DeleteMedicineAsync(string id)
         {
             await _mediator.Send(new DeleteMedicineByIdCommand(id));

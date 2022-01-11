@@ -7,7 +7,6 @@ using MedicineManaging.Domain.Interfaces;
 using MedicineManaging.Infrastructure.Data;
 using MedicineManaging.Infrastructure.Data.Config;
 using MedicineManaging.Infrastructure.Data.Repositories;
-using MedicineManaging.Infrastructure.MediatR.Clinics.Queries;
 using MedicineManaging.Infrastructure.MediatR.Medicines.Queries;
 using System.Reflection;
 

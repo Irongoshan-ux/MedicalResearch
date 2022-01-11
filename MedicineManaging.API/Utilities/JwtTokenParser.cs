@@ -11,17 +11,29 @@ namespace MedicineManaging.API.Utilities
 
             if (values.Count <= 0) return null;
 
-            if (values.FirstOrDefault().Contains("Bearer"))
+            string token = values.First();
+
+            if (token.Contains("Bearer"))
             {
+                token = token.Replace("Bearer ", "");
+            }
 
-                var token = values.FirstOrDefault().Replace("Bearer ", "");
+            return TryReadToken(token);
+        }
 
-                var handler = new JwtSecurityTokenHandler();
+        private static JwtSecurityToken? TryReadToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+
+            try
+            {
                 var jsonToken = handler.ReadToken(token);
-
                 return jsonToken as JwtSecurityToken;
             }
-            else return null;
+            catch
+            {
+                return null;
+            }
         }
     }
 }
