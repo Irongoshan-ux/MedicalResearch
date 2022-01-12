@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
-using UserManaging.API.DTOs.Users;
 using UserManaging.Domain.Entities.Users;
 using UserManaging.Domain.Interfaces;
 
@@ -30,7 +28,6 @@ namespace UserManaging.API.Services.Users
             {
                 return false;
             }
-
         }
 
         public async Task<bool> DeleteAsync(string userEmail, CancellationToken cancellationToken)
