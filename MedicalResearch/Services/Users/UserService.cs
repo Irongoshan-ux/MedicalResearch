@@ -40,6 +40,13 @@ namespace UserManaging.API.Services.Users
             return result.Succeeded;
         }
 
+        public async Task<IEnumerable<UserDTO>> FindAllAsync(CancellationToken cancellationToken)
+        {
+            var users = await _userRepository.FindAllAsync(cancellationToken);
+
+            return _mapper.Map<IEnumerable<UserDTO>>(users);
+        }
+
         public async Task<UserDTO> FindByEmailAsync(string email, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetUserByEmailAsync(email, cancellationToken);

@@ -42,6 +42,17 @@ namespace UserManaging.API.Controllers
             return StatusCode(StatusCodes.Status403Forbidden);
         }
 
+        [HttpGet("FindAll")]
+        public async Task<IActionResult> FindAllAsync(CancellationToken cancellationToken)
+        {
+            var result = await _userService.FindAllAsync(cancellationToken);
+
+            if (result is null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
         [HttpGet("FindByEmail")]
         public async Task<IActionResult> FindByEmailAsync(string email, CancellationToken cancellationToken)
         {

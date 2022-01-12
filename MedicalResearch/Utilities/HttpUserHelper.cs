@@ -13,7 +13,6 @@ namespace UserManaging.API.Utilities
         private static string GetCurrentUserEmail(HttpContext context)
         {
             var securityToken = ParseSecurityToken(context);
-
             var userEmail = securityToken is not null?
                 securityToken.Claims.First(claim => claim.Type.Equals("sub")).Value
                 : context.User.Claims.FirstOrDefault(claim => claim.Type.Equals("sub"))?.Value;

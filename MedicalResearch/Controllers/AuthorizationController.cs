@@ -130,7 +130,7 @@ namespace UserManaging.API.Controllers
                 claims: new[]
                 {
                     new Claim(ClaimTypes.Role, (await _userManager.GetRolesAsync(user)).First().ToLower()),
-                    new Claim(ClaimTypes.Email, user.Email)
+                    new Claim("sub", user.Email)
                 },
                 issuer: "API",
                 notBefore: DateTime.Now,
