@@ -73,5 +73,14 @@ namespace MedicineManaging.API.Controllers
 
             return Ok();
         }
+
+        [HttpGet]
+        [Route("Search")]
+        public async Task<IActionResult> SearchClinicsAsync(string name)
+        {
+            await _mediator.Send(new SearchClinicsQuery(name));
+
+            return Ok();
+        }
     }
 }

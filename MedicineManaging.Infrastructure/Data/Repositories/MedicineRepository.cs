@@ -35,6 +35,23 @@ namespace MedicineManaging.Infrastructure.Data.Repositories
         public Task<IEnumerable<Medicine>> FindByPageAsync(int page = 1, int pageSize = 5) =>
             Task.FromResult(_medicines.AsQueryable().Skip((page - 1) * pageSize).Take(pageSize).AsEnumerable());
 
+        public Task<IEnumerable<Medicine>> SearchAsync(MedicineType? medicineType, Container? container)
+        {
+            IQueryable<Medicine> query = _medicines.AsQueryable();
+
+            if (medicineType is not null)
+            {
+                query = query.Where(x => x.Type == medicineType);
+            }
+
+            if (container is not null)
+            {
+                query = query.Where(x => x.Container == container);
+            }
+
+            return Task.FromResult(query.AsEnumerable());
+        }
+
         public Task UpdateAsync(string medicineId, Medicine medicine) =>
             _medicines.ReplaceOneAsync(x => x.Id == medicineId, medicine);
     }

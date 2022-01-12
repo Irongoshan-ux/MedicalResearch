@@ -37,7 +37,7 @@ namespace MedicineManaging.API.Controllers
         {
             var medicines = await _mediator.Send(new GetMedicinesQuery());
 
-            if(medicines is null) return NotFound();
+            if (medicines is null) return NotFound();
 
             return Ok(medicines);
         }
@@ -79,6 +79,15 @@ namespace MedicineManaging.API.Controllers
         public async Task<IActionResult> DeleteMedicineAsync(string id)
         {
             await _mediator.Send(new DeleteMedicineByIdCommand(id));
+
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("Search")]
+        public async Task<IActionResult> SearchMedicineAsync(MedicineType? medicineType, Container? container)
+        {
+            await _mediator.Send(new SearchMedicinesQuery(medicineType, container));
 
             return Ok();
         }

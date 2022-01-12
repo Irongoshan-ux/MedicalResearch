@@ -1,5 +1,4 @@
 ﻿using MedicineManaging.Domain.Entities.Medicines;
-using System.Linq.Expressions;
 
 namespace MedicineManaging.Domain.Interfaces
 {
@@ -12,5 +11,6 @@ namespace MedicineManaging.Domain.Interfaces
         Task DeleteAsync(string medicineId);
         Task DeleteAsync(Medicine medicine);
         Task UpdateAsync(string medicineId, Medicine medicine);
+        Task<IEnumerable<Medicine>> SearchAsync(MedicineType? medicineType, Container? container);
     }
 }

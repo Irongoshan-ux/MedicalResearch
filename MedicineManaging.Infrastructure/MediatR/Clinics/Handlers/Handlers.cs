@@ -95,3 +95,16 @@ public class UpdateClinicHandler : IRequestHandler<UpdateClinicCommand, Unit>
         return Unit.Value;
     }
 }
+
+public class SearchClinicsByNameHandler : IRequestHandler<SearchClinicsQuery, IEnumerable<Clinic>>
+{
+    private readonly IClinicRepository _clinicRepository;
+
+    public SearchClinicsByNameHandler(IClinicRepository clinicRepository)
+    {
+        _clinicRepository = clinicRepository;
+    }
+
+    public Task<IEnumerable<Clinic>> Handle(SearchClinicsQuery request, CancellationToken cancellationToken) =>
+        _clinicRepository.SearchAsync(request.Name);
+}

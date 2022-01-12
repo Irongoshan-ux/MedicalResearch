@@ -11,5 +11,6 @@ namespace MedicineManaging.Domain.Interfaces
         Task DeleteAsync(string clinicId);
         Task DeleteAsync(Clinic clinic);
         Task UpdateAsync(string clinicId, Clinic clinic);
+        Task<IEnumerable<Clinic>> SearchAsync(string name);
     }
 }
