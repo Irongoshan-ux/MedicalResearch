@@ -1,25 +1,26 @@
-﻿using MedicineManaging.API.Utilities.DotNetTaskExecutors;
+﻿using MediatR;
+using MedicineManaging.API.Utilities.DotNetTaskExecutors;
 using MedicineManaging.Domain.Entities.Clinics;
-using MedicineManaging.Domain.Interfaces;
+using MedicineManaging.Infrastructure.MediatR.Clinics.Commands;
 
 namespace MedicineManaging.API.GraphQL.Mutations
 {
     public class ClinicMutation
     {
-        private readonly IClinicRepository _clinicRepository;
+        private readonly IMediator _mediator;
 
-        public ClinicMutation(IClinicRepository clinicRepository)
+        public ClinicMutation(IMediator mediator)
         {
-            _clinicRepository = clinicRepository;
+            _mediator = mediator;
         }
 
         public Task<bool> CreateClinicAsync(Clinic clinic) =>
-            TaskExecutor.GetResultAsync(() => _clinicRepository.AddAsync(clinic));
+            TaskExecutor.GetResultAsync(() => _mediator.Send(new AddClinicCommand(clinic)));
 
         public Task<bool> UpdateClinicAsync(string id, Clinic clinic) =>
-            TaskExecutor.GetResultAsync(() => _clinicRepository.UpdateAsync(id, clinic));
+            TaskExecutor.GetResultAsync(() => _mediator.Send(new UpdateClinicCommand(id, clinic)));
 
         public Task<bool> RemoveClinicAsync(string id) =>
-            TaskExecutor.GetResultAsync(() => _clinicRepository.DeleteAsync(id));
+            TaskExecutor.GetResultAsync(() => _mediator.Send(new DeleteClinicByIdCommand(id)));
     }
 }

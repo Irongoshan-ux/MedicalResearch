@@ -45,6 +45,16 @@ namespace MedicineManaging.API.Controllers
         }
 
         [HttpPost]
+        [Route("Register")]
+        [Access(Roles = new[] { "admin", "user" })]
+        public async Task<IActionResult> RegisterPatientAsync(RegisterPatientModel patient)
+        {
+            await _mediator.Send(new RegisterPatientCommand(patient));
+
+            return Ok();
+        }
+
+        [HttpPost]
         [Route("Create")]
         [Access(Roles = new[] { "admin" })]
         public async Task<IActionResult> AddPatientAsync(Patient patient)

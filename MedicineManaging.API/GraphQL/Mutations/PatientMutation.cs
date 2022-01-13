@@ -1,25 +1,29 @@
-﻿using MedicineManaging.API.Utilities.DotNetTaskExecutors;
+﻿using MediatR;
+using MedicineManaging.API.Utilities.DotNetTaskExecutors;
 using MedicineManaging.Domain.Entities.Patients;
-using MedicineManaging.Domain.Interfaces;
+using MedicineManaging.Infrastructure.MediatR.Patients.Commands;
 
 namespace MedicineManaging.API.GraphQL.Mutations
 {
     public class PatientMutation
     {
-        private readonly IPatientRepository _patientRepository;
+        private readonly IMediator _mediator;
 
-        public PatientMutation(IPatientRepository patientRepository)
+        public PatientMutation(IMediator mediator)
         {
-            _patientRepository = patientRepository;
+            _mediator = mediator;
         }
 
+        public Task<bool> RegisterPatientAsync(RegisterPatientModel patientModel) =>
+            TaskExecutor.GetResultAsync(() => _mediator.Send(new RegisterPatientCommand(patientModel)));
+
         public Task<bool> CreatePatientAsync(Patient patient) =>
-            TaskExecutor.GetResultAsync(() => _patientRepository.AddAsync(patient));
+            TaskExecutor.GetResultAsync(() => _mediator.Send(new AddPatientCommand(patient)));
 
         public Task<bool> UpdatePatientAsync(int id, Patient patient) =>
-            TaskExecutor.GetResultAsync(() => _patientRepository.UpdateAsync(id, patient));
+            TaskExecutor.GetResultAsync(() => _mediator.Send(new UpdatePatientCommand(id, patient)));
 
         public Task<bool> RemovePatientAsync(int id) =>
-            TaskExecutor.GetResultAsync(() => _patientRepository.DeleteAsync(id));
+            TaskExecutor.GetResultAsync(() => _mediator.Send(new DeletePatientByIdCommand(id)));
     }
 }

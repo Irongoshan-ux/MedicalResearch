@@ -6,6 +6,30 @@ using MedicineManaging.Infrastructure.MediatR.Patients.Queries;
 
 namespace MedicineManaging.Infrastructure.MediatR.Patients.Handlers;
 
+public class RegisterPatientHandler : IRequestHandler<RegisterPatientCommand, Unit>
+{
+    private readonly IPatientRepository _patientRepository;
+
+    public RegisterPatientHandler(IPatientRepository patientRepository)
+    {
+        _patientRepository = patientRepository;
+    }
+
+    public async Task<Unit> Handle(RegisterPatientCommand request, CancellationToken cancellationToken)
+    {
+        var patient = new Patient()
+        {
+            Number = request.NewPatient.Number,
+            BirthDay = request.NewPatient.BirthDay,
+            Sex = request.NewPatient.Sex
+        };
+
+        await _patientRepository.AddAsync(patient);
+
+        return Unit.Value;
+    }
+}
+
 public class AddPatientHandler : IRequestHandler<AddPatientCommand, Unit>
 {
     private readonly IPatientRepository _patientRepository;

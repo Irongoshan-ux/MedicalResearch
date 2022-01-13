@@ -12,10 +12,8 @@ namespace MedicineManaging.Domain.Entities.Patients.Visits
         [BsonId]
         [BsonRepresentation(BsonType.Int32)]
         public int Number { get; set; }
-
-        //[BsonRepresentation(BsonType.DateTime)]
         public DateTime Date { get; set; }
-
+        
         [ForeignKey("MedicineId")]
         public ICollection<Medicine>? Medicines { get; set; }
         public string? MedicineId { get; set; }

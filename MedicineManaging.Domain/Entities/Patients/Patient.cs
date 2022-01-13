@@ -14,13 +14,8 @@ namespace MedicineManaging.Domain.Entities.Patients
         [BsonRepresentation(BsonType.Int32)]
         public int Number { get; set; }
         public string Sex { get; set; }
-
-        //[BsonRepresentation(BsonType.DateTime)]
         public DateTime BirthDay { get; set; }
-        
-        //[BsonRepresentation(BsonType.DateTime)]
         public DateTime LastVisitDate { get; set; }
-
         public Status Status { get; set; }
         public MedicineType MedicineType { get; set; }
 
