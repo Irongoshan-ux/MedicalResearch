@@ -18,5 +18,8 @@ namespace MedicineManaging.Domain.Entities.Clinics
         [ForeignKey("MedicineId")]
         public ICollection<MedicinesCountForClinic>? Medicines { get; set; }
         public string MedicineId { get; set; }
+        public City City { get; set; }
+        public string Address { get; set; }
+        public string PhoneNumber { get; set; }
     }
 }

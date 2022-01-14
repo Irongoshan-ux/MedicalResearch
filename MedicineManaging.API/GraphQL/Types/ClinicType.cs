@@ -9,6 +9,9 @@ namespace MedicineManaging.API.GraphQL.Types
             descriptor.Field(_ => _.Id);
             descriptor.Field(_ => _.Name);
             descriptor.Field(_ => _.Medicines);
+            descriptor.Field(_ => _.City);
+            descriptor.Field(_ => _.Address);
+            descriptor.Field(_ => _.PhoneNumber);
         }
     }
 }

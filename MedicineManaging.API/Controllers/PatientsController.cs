@@ -36,7 +36,7 @@ namespace MedicineManaging.API.Controllers
         [Route("FindClinicsByPage")]
         [Access(Roles = new[] { "admin", "user" })]
         public async Task<IActionResult> GetPatientsByPageAsync(int page = 0, int pageSize = 5)
-{
+        {
             var clinics = await _mediator.Send(new GetPatientsByPageQuery(page, pageSize));
 
             if (clinics is null) return NotFound();
