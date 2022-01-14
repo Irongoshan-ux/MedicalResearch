@@ -3,6 +3,7 @@ using MedicineManaging.Domain.Entities.Clinics;
 using MedicineManaging.Domain.Interfaces;
 using MedicineManaging.Infrastructure.MediatR.Clinics.Commands;
 using MedicineManaging.Infrastructure.MediatR.Clinics.Queries;
+using MedicineManaging.Infrastructure.MediatR.Patients.Commands;
 
 namespace MedicineManaging.Infrastructure.MediatR.Clinics.Handlers;
 

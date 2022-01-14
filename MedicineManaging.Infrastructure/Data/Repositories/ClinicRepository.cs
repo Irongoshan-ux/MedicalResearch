@@ -29,6 +29,9 @@ namespace MedicineManaging.Infrastructure.Data.Repositories
         public Task<IEnumerable<Clinic>> FindAllAsync() =>
             Task.FromResult(_clinics.AsQueryable().ToEnumerable());
 
+        public Task<Clinic> FindByIdAsync(string clinicId) =>
+            _clinics.Find(x => x.Id == clinicId).FirstOrDefaultAsync();
+
         public Task<Clinic> FindByNameAsync(string name) =>
             _clinics.Find(x => x.Name == name).FirstOrDefaultAsync();
 

@@ -33,6 +33,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IMedicineRepository, MedicineRepository>();
 builder.Services.AddScoped<IClinicRepository, ClinicRepository>();
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 
 builder.Services
       .AddGraphQLServer("ClinicSchema")
@@ -45,6 +46,12 @@ builder.Services
            .AddQueryType<MedicineQuery>()
            .AddMutationType<MedicineMutation>()
       .AddType<MedicineType>();
+
+builder.Services
+      .AddGraphQLServer("PatientSchema")
+           .AddQueryType<PatientQuery>()
+           .AddMutationType<PatientMutation>()
+      .AddType<PatientType>();
 
 var app = builder.Build();
 
@@ -63,6 +70,7 @@ app.MapControllers();
 
 app.MapGraphQL("/api/graphql/clinic", "ClinicSchema");
 app.MapGraphQL("/api/graphql/medicine", "MedicineSchema");
+app.MapGraphQL("/api/graphql/patient", "PatientSchema");
 
 app.Use(async (context, next) =>
 {
@@ -74,7 +82,7 @@ app.Use(async (context, next) =>
     {
         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
     }
-    else await next?.Invoke();
+    else await next();
 });
 
 app.Run();
