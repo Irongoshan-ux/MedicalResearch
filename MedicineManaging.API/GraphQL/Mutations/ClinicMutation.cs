@@ -14,7 +14,7 @@ namespace MedicineManaging.API.GraphQL.Mutations
             _mediator = mediator;
         }
 
-        public Task<bool> CreateClinicAsync(Clinic clinic) =>
+        public Task<bool> CreateClinicAsync(AddClinicModel clinic) =>
             TaskExecutor.GetResultAsync(() => _mediator.Send(new AddClinicCommand(clinic)));
 
         public Task<bool> UpdateClinicAsync(string id, Clinic clinic) =>

@@ -18,7 +18,15 @@ public class AddClinicHandler : IRequestHandler<AddClinicCommand, Unit>
 
     public async Task<Unit> Handle(AddClinicCommand request, CancellationToken cancellationToken)
     {
-        await _clinicRepository.AddAsync(request.Clinic);
+        var clinic = new Clinic()
+        {
+            Name = request.ClinicModel.Name,
+            City = request.ClinicModel.City,
+            PhoneNumber = request.ClinicModel.Phone,
+            Address = request.ClinicModel.Address
+        };
+
+        await _clinicRepository.AddAsync(clinic);
 
         return Unit.Value;
     }
