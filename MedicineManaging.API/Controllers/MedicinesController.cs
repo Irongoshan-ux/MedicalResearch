@@ -1,7 +1,8 @@
 using MediatR;
+using MedicineManaging.API.Utilities.Attributes;
 using MedicineManaging.Domain.Entities.Medicines;
-using MedicineManaging.Infrastructure.MediatR.Commands;
-using MedicineManaging.Infrastructure.MediatR.Queries;
+using MedicineManaging.Infrastructure.MediatR.Medicines.Commands;
+using MedicineManaging.Infrastructure.MediatR.Medicines.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MedicineManaging.API.Controllers
@@ -36,13 +37,25 @@ namespace MedicineManaging.API.Controllers
         {
             var medicines = await _mediator.Send(new GetMedicinesQuery());
 
-            if(medicines is null) return NotFound();
+            if (medicines is null) return NotFound();
+
+            return Ok(medicines);
+        }
+
+        [HttpGet]
+        [Route("FindMedicinesByPage")]
+        public async Task<IActionResult> GetMedicinesByPageAsync(int page = 0, int pageSize = 5)
+        {
+            var medicines = await _mediator.Send(new GetMedicinesByPageQuery(page, pageSize));
+
+            if (medicines is null) return NotFound();
 
             return Ok(medicines);
         }
 
         [HttpPost]
         [Route("Create")]
+        [Access(Roles = new[] { "admin" })]
         public async Task<IActionResult> AddMedicineAsync(Medicine medicine)
         {
             await _mediator.Send(new AddMedicineCommand(medicine));
@@ -52,6 +65,7 @@ namespace MedicineManaging.API.Controllers
 
         [HttpPut]
         [Route("Update")]
+        [Access(Roles = new[] { "admin" })]
         public async Task<IActionResult> UpdateMedicineAsync(string id, Medicine medicine)
         {
             await _mediator.Send(new UpdateMedicineCommand(id, medicine));
@@ -61,9 +75,19 @@ namespace MedicineManaging.API.Controllers
 
         [HttpDelete]
         [Route("Delete")]
+        [Access(Roles = new[] { "admin" })]
         public async Task<IActionResult> DeleteMedicineAsync(string id)
         {
             await _mediator.Send(new DeleteMedicineByIdCommand(id));
+
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("Search")]
+        public async Task<IActionResult> SearchMedicineAsync(MedicineType? medicineType, Container? container)
+        {
+            await _mediator.Send(new SearchMedicinesQuery(medicineType, container));
 
             return Ok();
         }

@@ -1,17 +1,17 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
 using System.ComponentModel.DataAnnotations;
+using MedicineManaging.Domain.Constants;
 
 namespace MedicineManaging.Domain.Entities.Medicines
 {
     public class Medicine
     {
-        private const string IdErrorMessage = "ID must be a 24-digit number";
-
+        [Key]
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        [StringLength(24, MinimumLength = 24, ErrorMessage = IdErrorMessage)]
-        [RegularExpression("^[0-9]+$", ErrorMessage = IdErrorMessage)]
+        [StringLength(24, MinimumLength = 24, ErrorMessage = ConstantValues.ID_ERROR_MESSAGE)]
+        [RegularExpression("^[0-9]+$", ErrorMessage = ConstantValues.ID_ERROR_MESSAGE)]
         public string Id { get; set; }
         public MedicineType Type { get; set; }
         public string? Description { get; set; }

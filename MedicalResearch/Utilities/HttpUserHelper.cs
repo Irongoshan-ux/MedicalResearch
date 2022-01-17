@@ -28,7 +28,6 @@ namespace UserManaging.API.Utilities
 
             if (values.FirstOrDefault().Contains("Bearer"))
             {
-
                 var token = values.FirstOrDefault().Replace("Bearer ", "");
 
                 var handler = new JwtSecurityTokenHandler();

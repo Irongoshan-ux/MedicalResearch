@@ -7,7 +7,6 @@ services:
     restart: always
     volumes:
       - ${WEBAPP_STORAGE_HOME}/site:/data/db
-      #- ./data:/data/db
     ports:
       - "27017:27017"
       - "27018:27018"
@@ -25,8 +24,12 @@ services:
     build:
       context: .
       dockerfile: MedicineManaging.API/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "https://+:80;http://+:443"
     ports:
-      - "10000:80"
+      - "10001:80"
+      - "10000:443"
     depends_on:
       - mongodb
 
@@ -35,17 +38,11 @@ services:
     build:
       context: .
       dockerfile: MedicalResearch/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "https://+:80;http://+:443"
     ports:
       - "9000:80"
       - "9001:443"
     depends_on:
       - mssql
-
-
-networks:
-  vpcbr:
-    driver: bridge
-    ipam:
-     config:
-       - subnet: 10.5.0.0/16
-         gateway: 10.5.0.1

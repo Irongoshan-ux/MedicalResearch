@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
-using UserManaging.API.DTOs.Users;
 using UserManaging.Domain.Entities.Users;
 using UserManaging.Domain.Interfaces;
 
@@ -30,7 +28,6 @@ namespace UserManaging.API.Services.Users
             {
                 return false;
             }
-
         }
 
         public async Task<bool> DeleteAsync(string userEmail, CancellationToken cancellationToken)
@@ -41,6 +38,13 @@ namespace UserManaging.API.Services.Users
             var result = await _userRepository.DeleteAsync(user, cancellationToken);
 
             return result.Succeeded;
+        }
+
+        public async Task<IEnumerable<UserDTO>> FindAllAsync(CancellationToken cancellationToken)
+        {
+            var users = await _userRepository.FindAllAsync(cancellationToken);
+
+            return _mapper.Map<IEnumerable<UserDTO>>(users);
         }
 
         public async Task<UserDTO> FindByEmailAsync(string email, CancellationToken cancellationToken)

@@ -7,7 +7,7 @@ using MedicineManaging.Domain.Interfaces;
 using MedicineManaging.Infrastructure.Data;
 using MedicineManaging.Infrastructure.Data.Config;
 using MedicineManaging.Infrastructure.Data.Repositories;
-using MedicineManaging.Infrastructure.MediatR.Queries;
+using MedicineManaging.Infrastructure.MediatR.Medicines.Queries;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,12 +32,26 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IMedicineRepository, MedicineRepository>();
+builder.Services.AddScoped<IClinicRepository, ClinicRepository>();
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 
 builder.Services
-      .AddGraphQLServer()
-           .AddQueryType<Query>()
-           .AddMutationType<Mutation>()
+      .AddGraphQLServer("ClinicSchema")
+           .AddQueryType<ClinicQuery>()
+           .AddMutationType<ClinicMutation>()
+      .AddType<ClinicType>();
+
+builder.Services
+      .AddGraphQLServer("MedicineSchema")
+           .AddQueryType<MedicineQuery>()
+           .AddMutationType<MedicineMutation>()
       .AddType<MedicineType>();
+
+builder.Services
+      .AddGraphQLServer("PatientSchema")
+           .AddQueryType<PatientQuery>()
+           .AddMutationType<PatientMutation>()
+      .AddType<PatientType>();
 
 var app = builder.Build();
 
@@ -54,7 +68,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapGraphQL("/api/graphql");
+app.MapGraphQL("/api/graphql/clinic", "ClinicSchema");
+app.MapGraphQL("/api/graphql/medicine", "MedicineSchema");
+app.MapGraphQL("/api/graphql/patient", "PatientSchema");
 
 app.Use(async (context, next) =>
 {
@@ -62,11 +78,11 @@ app.Use(async (context, next) =>
 
     bool isValid = token is not null && JwtTokenValidator.ValidateToken(token);
 
-    if (!isValid)
+    if (!isValid && !context.Request.Path.Value.Contains("/api/graphql"))
     {
         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
     }
-    else await next?.Invoke();
+    else await next();
 });
 
 app.Run();

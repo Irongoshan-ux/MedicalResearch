@@ -38,6 +38,11 @@ namespace UserManaging.Infrastructure.Data.Repositories
             return _userManager.DeleteAsync(user);
         }
 
+        public async Task<IEnumerable<User>> FindAllAsync(CancellationToken cancellationToken)
+        {
+            return await UsersWithImages.ToListAsync(cancellationToken);
+        }
+
         public Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
             return UsersWithImages
