@@ -18,4 +18,4 @@ Use PowerShell:
 - `docker exec -i -e ASPNETCORE_HTTPS_PORT="9000" {YOUR_CONTAINER_ID} sh -c ""dotnet"  --additionalProbingPath /root/.nuget/packages  "/app/bin/Debug/net6.0/UserManaging.API.dll" | tee /dev/console"`
 
 - Get container ID `docker ps --filter "status=running" --filter "label=com.docker.compose.service" --filter "name=^/MedicineManaging.API$"`
-- `docker exec -i -e ASPNETCORE_HTTPS_PORT="63786" 35939f1e4052 sh -c ""dotnet"  --additionalProbingPath /root/.nuget/packages  "/app/bin/Debug/net6.0/MedicineManaging.API.dll" | tee /dev/console"`
+- `docker exec -i -e ASPNETCORE_HTTPS_PORT="63786" {YOUR_CONTAINER_ID} sh -c ""dotnet"  --additionalProbingPath /root/.nuget/packages  "/app/bin/Debug/net6.0/MedicineManaging.API.dll" | tee /dev/console"`
