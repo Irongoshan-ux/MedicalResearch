@@ -27,9 +27,7 @@ namespace MedicineManaging.API.Controllers
         {
             var clinics = await _mediator.Send(new GetClinicsQuery());
 
-            if (clinics is null) return NotFound();
-
-            return Ok(clinics);
+            return GetResult(clinics);
         }
 
         [HttpGet]
@@ -39,15 +37,13 @@ namespace MedicineManaging.API.Controllers
         {
             var clinics = await _mediator.Send(new GetClinicsByPageQuery(page, pageSize));
 
-            if (clinics is null) return NotFound();
-
-            return Ok(clinics);
+            return GetResult(clinics);
         }
 
         [HttpPost]
         [Route("Create")]
         [Access(Roles = new[] { "admin" })]
-        public async Task<IActionResult> AddClinicAsync(Clinic clinic)
+        public async Task<IActionResult> AddClinicAsync(AddClinicModel clinic)
         {
             await _mediator.Send(new AddClinicCommand(clinic));
 
@@ -78,9 +74,15 @@ namespace MedicineManaging.API.Controllers
         [Route("Search")]
         public async Task<IActionResult> SearchClinicsAsync(string name)
         {
-            await _mediator.Send(new SearchClinicsQuery(name));
+            var clinics = await _mediator.Send(new SearchClinicsQuery(name));
 
-            return Ok();
+            return GetResult(clinics);
         }
+
+        private IActionResult GetResult(IEnumerable<Clinic> clinics) =>
+            IsContainsResult(clinics) ? Ok(clinics) : NotFound();
+
+        private bool IsContainsResult(IEnumerable<Clinic> clinics) =>
+            clinics.Count() > 0;
     }
 }
