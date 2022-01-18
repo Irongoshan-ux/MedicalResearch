@@ -19,3 +19,18 @@ Use PowerShell:
 
 - Get container ID `docker ps --filter "status=running" --filter "label=com.docker.compose.service" --filter "name=^/MedicineManaging.API$"`
 - `docker exec -i -e ASPNETCORE_HTTPS_PORT="63786" {YOUR_CONTAINER_ID} sh -c ""dotnet"  --additionalProbingPath /root/.nuget/packages  "/app/bin/Debug/net6.0/MedicineManaging.API.dll" | tee /dev/console"`
+
+## Getting access to API (when it is running in docker container)
+
+### Tools
+
+- Browser
+- Postman
+
+### Documentation
+
+- UserManaging API
+located here: `https://localhost:9000/swagger`
+
+- MedicineManaging API
+located here: `https://localhost:10000/swagger`
