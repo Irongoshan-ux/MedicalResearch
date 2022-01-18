@@ -34,3 +34,8 @@ located here: `https://localhost:9000/swagger`
 
 - MedicineManaging API
 located here: `https://localhost:10000/swagger`
+
+- GraphQL for MedicineManaging: <br>
+`https://localhost:10000/api/graphql/clinic` <br>
+`https://localhost:10000/api/graphql/medicine` <br>
+`https://localhost:10000/api/graphql/patient`
