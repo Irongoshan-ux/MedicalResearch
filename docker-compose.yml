@@ -31,8 +31,8 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
     ports:
-      - "10001:80"
-      - "10000:443"
+      - "10000:80"
+      - "10001:443"
     depends_on:
       - mongodb
 

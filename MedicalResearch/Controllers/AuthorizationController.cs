@@ -70,10 +70,11 @@ namespace UserManaging.API.Controllers
             if (ModelState.IsValid)
             {
                 var checkedUser = await _userService.FindByEmailAsync(model.Email, cancellationToken);
+                var existedUserName = await _userManager.FindByNameAsync(model.UserName);
 
-                if (checkedUser != null)
+                if (checkedUser != null || existedUserName != null)
                 {
-                    return BadRequest("Sorry, this email is already registered");
+                    return BadRequest("Sorry, this email or user name is already registered");
                 }
 
                 var user = new User
