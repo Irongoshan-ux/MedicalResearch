@@ -39,3 +39,13 @@ located here: `https://localhost:10000/swagger`
 `https://localhost:10000/api/graphql/clinic` <br>
 `https://localhost:10000/api/graphql/medicine` <br>
 `https://localhost:10000/api/graphql/patient`
+
+### User credentials
+
+#### Admin
+- email: admin@gmail.com
+- password": qwe
+
+#### User
+- email: user@gmail.com
+- password": qwe
