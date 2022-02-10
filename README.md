@@ -10,15 +10,9 @@
 
 > Docker-compose
 
-Use PowerShell:
+Use PowerShell in the directory of local repository:
 
-- `docker-compose  -f "{YOUR_REPOSITORY_FULL_PATH}\docker-compose.yml" -f "{YOUR_REPOSITORY_FULL_PATH}\docker-compose.override.yml" -p dockercompose9845593756744887075 --ansi never up -d  medicinemanaging.api mongodb mssql usermanaging.api`
-
-- Get container ID `docker ps --filter "status=running" --filter "label=com.docker.compose.service" --filter "name=^/UserManaging.API$"`
-- `docker exec -i -e ASPNETCORE_HTTPS_PORT="9000" {YOUR_CONTAINER_ID} sh -c ""dotnet"  --additionalProbingPath /root/.nuget/packages  "/app/bin/Debug/net6.0/UserManaging.API.dll" | tee /dev/console"`
-
-- Get container ID `docker ps --filter "status=running" --filter "label=com.docker.compose.service" --filter "name=^/MedicineManaging.API$"`
-- `docker exec -i -e ASPNETCORE_HTTPS_PORT="63786" {YOUR_CONTAINER_ID} sh -c ""dotnet"  --additionalProbingPath /root/.nuget/packages  "/app/bin/Debug/net6.0/MedicineManaging.API.dll" | tee /dev/console"`
+- `docker-compose -f "docker-compose.yml" up -d --build`
 
 ## Getting access to API (when it is running in docker container)
 
