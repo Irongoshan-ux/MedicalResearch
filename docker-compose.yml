@@ -28,13 +28,16 @@ services:
       ASPNETCORE_ENVIRONMENT: "Development"
       ASPNETCORE_URLS: "https://+:80;http://+:443"
     volumes:
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
-      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ./Https:/root/.aspnet/https:ro
+      - ./UserSecrets:/root/.microsoft/usersecrets:ro
     ports:
       - "10000:80"
       - "10001:443"
     depends_on:
       - mongodb
+    # secrets:
+    #  - external_secret
+    #  - medicinemanagingapi_secret
 
   usermanaging.api:
     image: ${DOCKER_REGISTRY-}usermanagingapi
@@ -45,10 +48,21 @@ services:
       ASPNETCORE_ENVIRONMENT: "Development"
       ASPNETCORE_URLS: "https://+:80;http://+:443"
     volumes:
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
-      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ./Https:/root/.aspnet/https:ro
+      - ./UserSecrets:/root/.microsoft/usersecrets:ro
     ports:
       - "9000:80"
       - "9001:443"
     depends_on:
       - mssql
+    # secrets:
+    #  - external_secret
+    #  - usermanagingapi_secret
+    
+secrets:
+  external_secret:
+    external: true
+  usermanagingapi_secret:
+    file: usermanagingapi_secret.json
+  medicinemanagingapi_secret:
+    file: medicinemanagingapi_secret.json
