@@ -106,7 +106,7 @@ app.UseCors(builder =>
     builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
 });
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseRouting();
 

@@ -112,7 +112,7 @@ namespace UserManaging.API.Controllers
             Response.Cookies.Delete(".AspNetCore.Identity.Application");
 
             if (logout.PostLogoutRedirectUri is null)
-                logout.PostLogoutRedirectUri = @"https://" + HttpContext.Request.Host.Value;
+                logout.PostLogoutRedirectUri = @"http://" + HttpContext.Request.Host.Value;
 
             return Redirect(logout.PostLogoutRedirectUri);
         }

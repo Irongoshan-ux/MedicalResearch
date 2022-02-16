@@ -26,7 +26,7 @@ services:
       dockerfile: MedicineManaging.API/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
-      ASPNETCORE_URLS: "https://+:80;http://+:443"
+      ASPNETCORE_URLS: "http://+:443"
     volumes:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
@@ -43,7 +43,7 @@ services:
       dockerfile: MedicalResearch/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
-      ASPNETCORE_URLS: "https://+:80;http://+:443"
+      ASPNETCORE_URLS: "http://+:443"
     volumes:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
