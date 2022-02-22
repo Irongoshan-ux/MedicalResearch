@@ -105,8 +105,6 @@ namespace UserManaging.API.Services.Users
         {
             var user = await GetUserRequiredInfoAsync(userDto, cancellationToken);
 
-            user.Images = userDto.Images;
-
             var result = await _userRepository.UpdateAsync(user, cancellationToken);
 
             return result.Succeeded;
@@ -127,10 +125,21 @@ namespace UserManaging.API.Services.Users
 
             user.ConcurrencyStamp = userFromDb?.ConcurrencyStamp;
             user.Id = userFromDb?.Id;
-            
+
+            UpdateUserName(userDto.UserName, user);
+
             if (user.Images is null) user.Images = userFromDb?.Images;
 
             return user;
+        }
+
+        private void UpdateUserName(string userName, User user)
+        {
+            if (user.UserName.Equals(userName)) return;
+            else
+            {
+                user.UserName = userName;
+            }
         }
     }
 }

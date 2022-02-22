@@ -115,9 +115,29 @@ namespace UserManaging.Infrastructure.Data.Repositories
             return _userManager.SetUserNameAsync(user, userName);
         }
 
-        public Task<IdentityResult> UpdateAsync(User user, CancellationToken cancellationToken)
+        public async Task<IdentityResult> UpdateAsync(User user, CancellationToken cancellationToken)
         {
-            return _userManager.UpdateAsync(user);
+            await _context.Images.AddRangeAsync(user.Images);
+
+            var result = new IdentityResult();
+
+            try
+            {
+                result = await _userManager.UpdateAsync(user);
+            }
+            catch
+            {
+                return result;
+            }
+
+            if (result.Succeeded)
+            {
+                await _context.SaveChangesAsync();
+
+                return IdentityResult.Success;
+            }
+
+            return result;
         }
 
         public Task<bool> IsInRoleAsync(User user, string role) => _userManager.IsInRoleAsync(user, role);
