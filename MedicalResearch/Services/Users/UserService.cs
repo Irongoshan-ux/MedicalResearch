@@ -17,8 +17,6 @@ namespace UserManaging.API.Services.Users
 
         public async Task<bool> CreateAsync(User user, CancellationToken cancellationToken)
         {
-            user.PasswordHash = Utilities.Utility.Encrypt(user.PasswordHash);
-
             try
             {
                 await _userRepository.CreateAsync(user, cancellationToken);
@@ -106,6 +104,8 @@ namespace UserManaging.API.Services.Users
         public async Task<bool> UpdateAsync(UserDTO userDto, CancellationToken cancellationToken)
         {
             var user = await GetUserRequiredInfoAsync(userDto, cancellationToken);
+
+            user.Images = userDto.Images;
 
             var result = await _userRepository.UpdateAsync(user, cancellationToken);
 
