@@ -25,11 +25,13 @@ namespace MedicineManaging.API.Controllers
         [Access(Roles = new[] { "admin", "user" })]
         public async Task<IActionResult> GetPatientsAsync()
         {
-            var clinics = await _mediator.Send(new GetPatientsQuery());
+            var patients = await _mediator.Send(new GetPatientsQuery());
 
-            if (clinics is null) return NotFound();
+            _logger.LogInformation($"Returned '{patients.Count()}' patients");
 
-            return Ok(clinics);
+            if (patients.Any()) return Ok(patients);
+         
+            return NotFound();
         }
 
         [HttpGet]
@@ -37,11 +39,13 @@ namespace MedicineManaging.API.Controllers
         [Access(Roles = new[] { "admin", "user" })]
         public async Task<IActionResult> GetPatientsByPageAsync(int page = 0, int pageSize = 5)
         {
-            var clinics = await _mediator.Send(new GetPatientsByPageQuery(page, pageSize));
+            var patients = await _mediator.Send(new GetPatientsByPageQuery(page, pageSize));
 
-            if (clinics is null) return NotFound();
+            _logger.LogInformation($"Returned '{patients.Count()}' patients");
 
-            return Ok(clinics);
+            if (patients.Any()) return Ok(patients);
+         
+            return NotFound();
         }
 
         [HttpPost]
@@ -50,6 +54,8 @@ namespace MedicineManaging.API.Controllers
         public async Task<IActionResult> RegisterPatientAsync(RegisterPatientModel patient)
         {
             await _mediator.Send(new RegisterPatientCommand(patient));
+
+            _logger.LogInformation($"Registered '{patient.Number}' patient");
 
             return Ok();
         }
@@ -61,6 +67,8 @@ namespace MedicineManaging.API.Controllers
         {
             await _mediator.Send(new AddPatientCommand(patient));
 
+            _logger.LogInformation($"Added '{patient.Number}' patient");
+
             return Ok();
         }
 
@@ -71,6 +79,8 @@ namespace MedicineManaging.API.Controllers
         {
             await _mediator.Send(new UpdatePatientCommand(id, patient));
 
+            _logger.LogInformation($"Updated '{patient.Number}' patient");
+
             return Ok();
         }
 
@@ -80,6 +90,8 @@ namespace MedicineManaging.API.Controllers
         public async Task<IActionResult> DeletePatientAsync(int id)
         {
             await _mediator.Send(new DeletePatientByIdCommand(id));
+
+            _logger.LogInformation($"Deleted '{id}' patient");
 
             return Ok();
         }
