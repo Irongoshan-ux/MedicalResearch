@@ -17,8 +17,6 @@ namespace UserManaging.API.Services.Users
 
         public async Task<bool> CreateAsync(User user, CancellationToken cancellationToken)
         {
-            user.PasswordHash = Utilities.Utility.Encrypt(user.PasswordHash);
-
             try
             {
                 await _userRepository.CreateAsync(user, cancellationToken);
@@ -127,8 +125,10 @@ namespace UserManaging.API.Services.Users
 
             user.ConcurrencyStamp = userFromDb?.ConcurrencyStamp;
             user.Id = userFromDb?.Id;
+            user.PasswordHash = userFromDb?.PasswordHash;
             
             if (user.Images is null) user.Images = userFromDb?.Images;
+            if (user.UserName is null) user.UserName = userFromDb?.UserName;
 
             return user;
         }

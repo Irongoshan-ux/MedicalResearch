@@ -20,7 +20,7 @@ services:
       - "3306:3306"
 
   medicinemanaging.api:
-    image: ${DOCKER_REGISTRY-}medicinemanagingapi
+    image: irongoshan/medicinemanagingapi
     build:
       context: .
       dockerfile: MedicineManaging.API/Dockerfile
@@ -37,7 +37,7 @@ services:
       - mongodb
 
   usermanaging.api:
-    image: ${DOCKER_REGISTRY-}usermanagingapi
+    image: irongoshan/usermanagingapi
     build:
       context: .
       dockerfile: MedicalResearch/Dockerfile
