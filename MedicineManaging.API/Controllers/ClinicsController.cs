@@ -37,6 +37,8 @@ namespace MedicineManaging.API.Controllers
         {
             var clinics = await _mediator.Send(new GetClinicsByPageQuery(page, pageSize));
 
+            _logger.LogInformation($"Returned '{clinics.Count()}' clinics");
+
             return GetResult(clinics);
         }
 
@@ -46,6 +48,8 @@ namespace MedicineManaging.API.Controllers
         public async Task<IActionResult> AddClinicAsync(AddClinicModel clinic)
         {
             await _mediator.Send(new AddClinicCommand(clinic));
+
+            _logger.LogInformation($"Added '{clinic.Name}' clinic");
 
             return Ok();
         }
@@ -57,6 +61,8 @@ namespace MedicineManaging.API.Controllers
         {
             await _mediator.Send(new UpdateClinicCommand(id, clinic));
 
+            _logger.LogInformation($"Updated '{clinic.Id}' clinic");
+
             return Ok();
         }
 
@@ -67,6 +73,8 @@ namespace MedicineManaging.API.Controllers
         {
             await _mediator.Send(new DeleteClinicByIdCommand(id));
 
+            _logger.LogInformation($"Deleted '{id}' clinic");
+
             return Ok();
         }
 
@@ -76,13 +84,12 @@ namespace MedicineManaging.API.Controllers
         {
             var clinics = await _mediator.Send(new SearchClinicsQuery(name));
 
+            _logger.LogInformation($"Found '{clinics.Count()}' clinics");
+
             return GetResult(clinics);
         }
 
         private IActionResult GetResult(IEnumerable<Clinic> clinics) =>
-            IsContainsResult(clinics) ? Ok(clinics) : NotFound();
-
-        private bool IsContainsResult(IEnumerable<Clinic> clinics) =>
-            clinics.Count() > 0;
+            clinics.Any() ? Ok(clinics) : NotFound();
     }
 }

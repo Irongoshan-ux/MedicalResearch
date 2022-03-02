@@ -26,6 +26,8 @@ namespace MedicineManaging.API.Controllers
         {
             var medicine = await _mediator.Send(new GetMedicineByIdQuery(id));
 
+            _logger.LogInformation($"Returned '{medicine.Id}' medicine");
+
             if (medicine is null) return NotFound();
 
             return Ok(medicine);
@@ -37,9 +39,11 @@ namespace MedicineManaging.API.Controllers
         {
             var medicines = await _mediator.Send(new GetMedicinesQuery());
 
-            if (medicines is null) return NotFound();
+            _logger.LogInformation($"Returned '{medicines.Count()}' medicines");
 
-            return Ok(medicines);
+            if (medicines.Any()) return Ok(medicines);
+
+            return NotFound();
         }
 
         [HttpGet]
@@ -48,9 +52,11 @@ namespace MedicineManaging.API.Controllers
         {
             var medicines = await _mediator.Send(new GetMedicinesByPageQuery(page, pageSize));
 
-            if (medicines is null) return NotFound();
+            _logger.LogInformation($"Returned '{medicines.Count()}' medicines");
 
-            return Ok(medicines);
+            if (medicines.Any()) return Ok(medicines);
+
+            return NotFound();
         }
 
         [HttpPost]
@@ -59,6 +65,8 @@ namespace MedicineManaging.API.Controllers
         public async Task<IActionResult> AddMedicineAsync(Medicine medicine)
         {
             await _mediator.Send(new AddMedicineCommand(medicine));
+
+            _logger.LogInformation($"Added '{medicine.Id}' medicine");
 
             return Ok();
         }
@@ -70,6 +78,8 @@ namespace MedicineManaging.API.Controllers
         {
             await _mediator.Send(new UpdateMedicineCommand(id, medicine));
 
+            _logger.LogInformation($"Updated '{medicine.Id}' medicine");
+
             return Ok();
         }
 
@@ -80,6 +90,8 @@ namespace MedicineManaging.API.Controllers
         {
             await _mediator.Send(new DeleteMedicineByIdCommand(id));
 
+            _logger.LogInformation($"Deleted '{id}' medicine");
+
             return Ok();
         }
 
@@ -87,9 +99,13 @@ namespace MedicineManaging.API.Controllers
         [Route("Search")]
         public async Task<IActionResult> SearchMedicineAsync(MedicineType? medicineType, Container? container)
         {
-            await _mediator.Send(new SearchMedicinesQuery(medicineType, container));
+            var medicines = await _mediator.Send(new SearchMedicinesQuery(medicineType, container));
 
-            return Ok();
+            _logger.LogInformation($"Returned '{medicines.Count()}' medicines by searching");
+
+            if (medicines.Any()) return Ok(medicines);
+
+            return NotFound();
         }
     }
 }
