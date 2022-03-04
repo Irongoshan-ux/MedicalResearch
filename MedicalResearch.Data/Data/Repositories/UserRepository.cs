@@ -119,7 +119,8 @@ namespace UserManaging.Infrastructure.Data.Repositories
         {
             _context.Users.Update(user);
 
-            if (user.Images is not null) _context.Images.AddRange(user.Images);
+            if (user.Images is not null)
+                _context.Images.AddRange(user.Images);
 
             await _context.SaveChangesAsync(cancellationToken);
 
