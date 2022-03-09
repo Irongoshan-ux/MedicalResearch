@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Primitives;
 using System.IdentityModel.Tokens.Jwt;
+using UserManaging.API.Exceptions.User;
 using UserManaging.Domain.Entities.Users;
 using UserManaging.Domain.Interfaces;
 
@@ -7,21 +8,41 @@ namespace UserManaging.API.Utilities
 {
     public class HttpUserHelper
     {
-        public static Task<UserDTO> GetCurrentUserAsync(IUserService userService, HttpContext context) =>
-            userService.FindByEmailAsync(GetCurrentUserEmail(context), CancellationToken.None);
+        public static Task<UserDTO> GetCurrentUserAsync(IUserService userService, HttpContext context)
+        {
+            try
+            {
+                return userService.FindByEmailAsync(GetCurrentUserEmail(context), CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+                throw new UserNotFoundException(ex.Message);
+            }
+        }
 
         private static string GetCurrentUserEmail(HttpContext context)
         {
             var securityToken = ParseSecurityToken(context);
-            var userEmail = securityToken is not null?
-                securityToken.Claims.First(claim => claim.Type.Equals("sub")).Value
-                : context.User.Claims.FirstOrDefault(claim => claim.Type.Equals("sub"))?.Value;
 
+            string userEmail = string.Empty;
+
+            try
+            {
+                userEmail = securityToken is not null ?
+                    securityToken.Claims.First(claim => claim.Type.Equals("sub")).Value
+                    : context.User.Claims.FirstOrDefault(claim => claim.Type.Equals("sub"))?.Value;
+            }
+            catch (Exception e)
+            {
+                throw new UserNotFoundException(e.Message);
+            }
             return userEmail;
         }
 
         public static JwtSecurityToken? ParseSecurityToken(HttpContext context)
         {
+            if (context is null) return null;
+
             context.Request.Headers.TryGetValue("Authorization", out StringValues values);
 
             if (values.Count <= 0) return null;

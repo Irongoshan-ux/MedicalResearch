@@ -4,6 +4,6 @@ namespace UserManaging.Domain.Interfaces
 {
     public interface IUserAuthenticaionService
     {
-        Task<User> AuthenticateAsync(string email, string password, CancellationToken cancellationToken);
+        Task<User> AuthenticateAsync(string email, string passwordHash, CancellationToken cancellationToken);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using UserManaging.API.Exceptions.User;
 using UserManaging.Domain.Entities.Users;
 using UserManaging.Domain.Interfaces;
 
@@ -48,6 +49,8 @@ namespace UserManaging.API.Services.Users
         public async Task<UserDTO> FindByEmailAsync(string email, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetUserByEmailAsync(email, cancellationToken);
+
+            if (user is null) throw new UserNotFoundException();
 
             return _mapper.Map<UserDTO>(user);
         }
@@ -112,9 +115,16 @@ namespace UserManaging.API.Services.Users
 
         public async Task<bool> IsInRoleAsync(UserDTO user, string role)
         {
-            var userFromDb = await GetUserRequiredInfoAsync(user, CancellationToken.None);
+            try
+            {
+                var userFromDb = await GetUserRequiredInfoAsync(user, CancellationToken.None);
 
-            return await _userRepository.IsInRoleAsync(userFromDb, role);
+                return await _userRepository.IsInRoleAsync(userFromDb, role);
+            }
+            catch (Exception ex)
+            {
+                throw new UserNotFoundException(ex.Message);
+            }
         }
 
         private async Task<User> GetUserRequiredInfoAsync(UserDTO userDto, CancellationToken cancellationToken)
