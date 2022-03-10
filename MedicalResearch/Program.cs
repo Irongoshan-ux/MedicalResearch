@@ -12,12 +12,6 @@ using UserManaging.Infrastructure.Data.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string projectPath = AppDomain.CurrentDomain.BaseDirectory.Split(new String[] { @"bin\" }, StringSplitOptions.None)[0];
-var configuration = new ConfigurationBuilder()
-        .SetBasePath(projectPath)
-        .AddJsonFile("appsettings.json")
-        .Build();
-
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -50,7 +44,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseSqlServer(configuration.GetConnectionString("UserManagingDatabase"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("UserManagingDatabase"));
 });
 
 builder.Services.AddCors();
