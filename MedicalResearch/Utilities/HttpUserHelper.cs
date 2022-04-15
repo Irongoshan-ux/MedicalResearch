@@ -45,18 +45,30 @@ namespace UserManaging.API.Utilities
 
             context.Request.Headers.TryGetValue("Authorization", out StringValues values);
 
-            if (values.Count <= 0) return null;
+            var token = values.FirstOrDefault();
 
-            if (values.FirstOrDefault().Contains("Bearer"))
+            if (IsTokenValid(token))
             {
-                var token = values.FirstOrDefault().Replace("Bearer ", "");
-
-                var handler = new JwtSecurityTokenHandler();
-                var jsonToken = handler.ReadToken(token);
-
-                return jsonToken as JwtSecurityToken;
+                if (token.Contains("Bearer"))
+                {
+                    return GetJwtToken(ref token);
+                }
             }
-            else return null;
+
+            return null;
         }
+
+        private static JwtSecurityToken? GetJwtToken(ref string token)
+        {
+            token = token.Replace("Bearer ", "");
+
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token);
+
+            return jsonToken as JwtSecurityToken;
+        }
+
+        private static bool IsTokenValid(string? token) =>
+            !string.IsNullOrWhiteSpace(token) && token.Length > 20;
     }
 }

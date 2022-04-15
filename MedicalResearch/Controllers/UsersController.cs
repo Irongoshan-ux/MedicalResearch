@@ -53,7 +53,7 @@ namespace UserManaging.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("FindByEmail")]
+        [HttpGet("FindByEmail/{email}")]
         public async Task<IActionResult> FindByEmailAsync(string email, CancellationToken cancellationToken)
         {
             var result = await _userService.FindByEmailAsync(email, cancellationToken);

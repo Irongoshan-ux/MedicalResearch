@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using UserManaging.API.DTOs.AuthModel;
 using UserManaging.API.DTOs.Users;
+using UserManaging.API.Exceptions.User;
 using UserManaging.API.Utilities;
 using UserManaging.Domain.Entities.Users;
 using UserManaging.Domain.Interfaces;
@@ -14,7 +15,7 @@ using UserManaging.Domain.Interfaces;
 namespace UserManaging.API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AuthorizationController : ControllerBase
     {
         private readonly ILogger<AuthorizationController> _logger;
@@ -69,12 +70,16 @@ namespace UserManaging.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var checkedUser = await _userService.FindByEmailAsync(model.Email, cancellationToken);
-                var existedUserName = await _userManager.FindByNameAsync(model.UserName);
+                UserDTO checkedUser;
+                User existedUserName;
 
-                if (checkedUser != null || existedUserName != null)
+                try
                 {
-                    return BadRequest("Sorry, this email or user name is already registered");
+                    checkedUser = await _userService.FindByEmailAsync(model.Email, cancellationToken);
+                    existedUserName = await _userManager.FindByNameAsync(model.UserName);
+                }
+                catch (UserNotFoundException e)
+                {
                 }
 
                 var user = new User
